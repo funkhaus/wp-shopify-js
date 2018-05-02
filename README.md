@@ -5,5 +5,20 @@ With this plugin, you can tap into Shopify as the source of truth for prices, qu
 ## Installation
 
 1.  Follow the instructions on the [WP plugin](https://github.com/funkhaus/wp-shopify) repo to install on the back-end.
-2.  `npm install wp-shopify`
-3.  (TODO)
+1.  `npm install wp-shopify`
+1.  In your main JS file:
+    ```
+    import WpShopify from 'wp-shopify'
+    Vue.use(WpShopify)
+    ```
+1.  In any component you want to have product data:
+
+    ```
+    import { mixin as WpShopify } from 'wp-shopify'
+
+    export default {
+        mixins: [ WpShopify ]
+    }
+    ```
+
+## Usage

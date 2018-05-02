@@ -16,6 +16,8 @@ const buildProductQueryBody = function(shopifyId) {
             edges {
               node {
                 price
+                title
+                availableForSale
               }
             }
           }
