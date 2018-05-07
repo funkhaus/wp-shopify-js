@@ -6,11 +6,11 @@ export default {
             type: [String, Number],
             default: ''
         },
-        storefrontToken: {
+        shopifyDomain: {
             type: String,
             default: ''
         },
-        shopifyDomain: {
+        storefrontToken: {
             type: String,
             default: ''
         }
@@ -39,5 +39,6 @@ export default {
             token
         })
         this.shopifyData = data
-    }
+    },
+    methods: {}
 }
