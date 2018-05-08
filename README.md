@@ -1,6 +1,6 @@
-This repo is the Vue plugin for [wp-shopify](https://github.com/funkhaus/wp-shopify), which integrates WordPress, Vue, and Shopify.
+This repo is the Vue plugin for [WP-Shopify](https://github.com/funkhaus/wp-shopify), which integrates WordPress, Vue, and Shopify.
 
-With this plugin, you can tap into Shopify as the source of truth for prices, quantities, and more for displaying products on your WordPress + Vue site.
+With this plugin, you can tap into Shopify as the source of truth for prices, availability, variants, and more when displaying products on your WP-Shopify site.
 
 ## Installation
 
@@ -28,12 +28,12 @@ A single product's Vue template might look like this:
 ```html
 <template>
     <main class="product">
-        <h2>{{ shopifyData.title }}</h2>
-        <h3>${{ selectedVariant.price }}</h3>
+        <h2>{{ productData.title }}</h2>
+        <h3>${{ price }}</h3>
 
         <select v-model="selectedVariantIndex">
             <option
-                v-for="(variant, i) in shopifyData.variants"
+                v-for="(variant, i) in variants"
                 :key="i"
                 :value="i">
                 {{ variant.title }}
@@ -47,17 +47,7 @@ A single product's Vue template might look like this:
 import { mixin as WpShopify } from 'wp-shopify'
 
 export default {
-    mixins: [ WpShopify ],
-    data(){
-        return {
-            selectedVariantIndex: 0
-        }
-    },
-    computed: {
-        selectedVariant(){
-            return this.shopifyData.variants[this.selectedVariantIndex]
-        }
-    }
+    mixins: [ WpShopify ]
 }
 </script>
 ```
@@ -100,8 +90,8 @@ Any component with the wp-shopify mixin gets the following properties:
 
 *   **Data**
 
-    *   `shopifyData` - default `null`
-        Data fetched from Shopify for this product. `null` if none received yet (or if a rejection is received). Otherwise an object with the following properties:
+    *   `productData` - default `null`
+        Data fetched from Shopify and WordPress for this product. `null` if none received yet (or if a rejection is received). Otherwise an object with the following properties:
 
         ```js
         // All product variants
@@ -121,7 +111,10 @@ Any component with the wp-shopify mixin gets the following properties:
         title: 'T-Shirt Example',
 
         // Description HTML - available, but recommended to use WordPress content for faster load times
-        descriptionHtml: ''
+        descriptionHtml: '',
+
+        // URL to WordPress page
+        wpUrl: 'https://your-site.com/products/product-name'
         ```
 
 *   **Mounted**

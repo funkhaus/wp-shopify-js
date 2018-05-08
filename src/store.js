@@ -91,8 +91,8 @@ export default {
             if (state.productData[shopifyId]) {
                 return state.productData[shopifyId]
             }
-            // // } else if (
-            // if (
+            // TODO: implement checking for cached variants
+            // } else if (
             //     Object.keys(state.productData)
             //         .map(key => {
             //             const product = state.productData[key]
