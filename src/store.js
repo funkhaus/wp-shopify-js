@@ -55,20 +55,24 @@ export default {
         UPDATE_CACHED_RESULT(state, { shopifyId, data }) {
             state.productData[shopifyId] = data
         },
-        ADD_TO_CART(state, { variant, quantity }) {
+        ADD_TO_CART(state, { variantId, productId, quantity }) {
             // default to 1 of item
             quantity = quantity || 1
+            variantId = variantId || productId
 
             // cancel if already exists
-            if (state.cart.some(entry => entry.item.id == variant.id)) {
+            if (state.cart.some(item => item.variantId == variantId)) {
                 return
             }
 
             // otherwise, add and set quantity to desired value
             state.cart.push({
-                item: variant,
+                variantId,
+                productId,
                 quantity
             })
+
+            console.log(state)
         },
         REMOVE_FROM_CART(state, variant) {
             const index = state.cart.findIndex(
@@ -88,6 +92,16 @@ export default {
             if (state.productData[shopifyId]) {
                 return state.productData[shopifyId]
             }
+            // // } else if (
+            // if (
+            //     Object.keys(state.productData)
+            //         .map(key => {
+            //             const product = state.productData[key]
+            //             return false
+            //         })
+            //         .some(res => res)
+            // ) {
+            // }
 
             // build graphql query
             const query = buildProductQueryBody(shopifyId)
@@ -99,11 +113,18 @@ export default {
             )
             const topLevelData = _get(result, 'data.node', {})
 
+            // add WP ID
+            const url =
+                location.origin +
+                `/wp-admin/admin-ajax.php?action=wp_url_from_product_id&product_id=${shopifyId}`
+            const wpUrl = await fetch(url).then(res => res.text())
+
             // build result
             const dataToSave = {
                 variants,
                 title: topLevelData.title,
-                descriptionHtml: topLevelData.descriptionHtml
+                descriptionHtml: topLevelData.descriptionHtml,
+                wpUrl
             }
 
             // save result

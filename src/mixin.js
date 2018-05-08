@@ -17,7 +17,8 @@ export default {
     },
     data() {
         return {
-            shopifyData: null
+            productData: null,
+            selectedVariantIndex: 0
         }
     },
     async mounted() {
@@ -38,7 +39,29 @@ export default {
             domain,
             token
         })
-        this.shopifyData = data
+        this.productData = data
     },
-    methods: {}
+    computed: {
+        price() {
+            return _get(this.selectedVariant, 'price', '0.00')
+        },
+        variants() {
+            return _get(this.productData, 'variants', [])
+        },
+        selectedVariant() {
+            return _get(this, `variants[${this.selectedVariantIndex}]`, {})
+        }
+    },
+    methods: {
+        addToCart(evt, quantity = 1) {
+            this.$shopify.commit('ADD_TO_CART', {
+                variantId: this.selectedVariant.id,
+                productId: this.productId,
+                quantity
+            })
+        },
+        removeFromCart(evt) {
+            this.$shopify.commit('REMOVE_FROM_CART', this.selectedVariant)
+        }
+    }
 }
