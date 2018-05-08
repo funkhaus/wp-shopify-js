@@ -18,6 +18,7 @@ const buildProductQueryBody = function(shopifyId) {
                 price
                 title
                 availableForSale
+                id
               }
             }
           }
@@ -47,11 +48,35 @@ const executeQuery = async function({ domain, token, query }) {
 
 export default {
     state: {
-        productData: {}
+        productData: {},
+        cart: []
     },
     mutations: {
         UPDATE_CACHED_RESULT(state, { shopifyId, data }) {
             state.productData[shopifyId] = data
+        },
+        ADD_TO_CART(state, { variant, quantity }) {
+            // default to 1 of item
+            quantity = quantity || 1
+
+            // cancel if already exists
+            if (state.cart.some(entry => entry.item.id == variant.id)) {
+                return
+            }
+
+            // otherwise, add and set quantity to desired value
+            state.cart.push({
+                item: variant,
+                quantity
+            })
+        },
+        REMOVE_FROM_CART(state, variant) {
+            const index = state.cart.findIndex(
+                entry => entry.item.id == variant.id
+            )
+            if (index != -1) {
+                state.cart.splice(index, 1)
+            }
         }
     },
     actions: {
