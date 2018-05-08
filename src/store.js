@@ -55,7 +55,7 @@ export default {
         UPDATE_CACHED_RESULT(state, { shopifyId, data }) {
             state.productData[shopifyId] = data
         },
-        ADD_TO_CART(state, { variantId, productId, quantity }) {
+        ADD_TO_CART(state, { variantId, productId, wpUrl, quantity }) {
             // default to 1 of item
             quantity = quantity || 1
             variantId = variantId || productId
@@ -69,10 +69,9 @@ export default {
             state.cart.push({
                 variantId,
                 productId,
+                wpUrl,
                 quantity
             })
-
-            console.log(state)
         },
         REMOVE_FROM_CART(state, variant) {
             const index = state.cart.findIndex(

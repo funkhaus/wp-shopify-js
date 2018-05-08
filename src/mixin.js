@@ -57,6 +57,7 @@ export default {
             this.$shopify.commit('ADD_TO_CART', {
                 variantId: this.selectedVariant.id,
                 productId: this.productId,
+                wpUrl: this.productData.wpUrl,
                 quantity
             })
         },
