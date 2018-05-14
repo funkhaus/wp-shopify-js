@@ -61,26 +61,43 @@ export default {
             variantId = variantId || productId
 
             // cancel if already exists
-            if (state.cart.some(item => item.variantId == variantId)) {
-                return
-            }
+            // if (state.cart.some(item => item.variantId == variantId)) {
+            //     return
+            // }
 
-            // otherwise, add and set quantity to desired value
-            state.cart.push({
+            Vue.set(state.cart, state.cart.length, {
                 variantId,
                 productId,
                 wpUrl,
                 quantity
             })
-        },
-        REMOVE_FROM_CART(state, variant) {
-            const index = state.cart.findIndex(
-                entry => entry.item.id == variant.id
-            )
-            if (index != -1) {
-                state.cart.splice(index, 1)
-            }
+
+            //Vue.set(state, 'cart', state.cart)
+
+            console.log(state.cart)
+
+            // otherwise, add and set quantity to desired value
+            // state.cart = [1, 2, 3]
+            // Vue.set(state, 'cart', [
+            //     ...state.cart,
+            //     {
+            //         variantId,
+            //         productId,
+            //         wpUrl,
+            //         quantity
+            //     }
+            // ])
+
+            // console.log(state.cart)
         }
+        // REMOVE_FROM_CART(state, variant) {
+        //     const index = state.cart.findIndex(
+        //         entry => entry.item.id == variant.id
+        //     )
+        //     if (index != -1) {
+        //         state.cart.splice(index, 1)
+        //     }
+        // }
     },
     actions: {
         async GET_PRODUCT_DATA(

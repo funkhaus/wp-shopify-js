@@ -1,16 +1,41 @@
-This repo is the Vue plugin for [WP-Shopify](https://github.com/funkhaus/wp-shopify), which integrates WordPress, Vue, and Shopify.
+This repo is the Vue mixin + store module for [WP-Shopify](https://github.com/funkhaus/wp-shopify), which integrates WordPress, Vue, and Shopify.
 
 With this plugin, you can tap into Shopify as the source of truth for prices, availability, variants, and more when displaying products on your WP-Shopify site.
+
+## Prerequisites
+
+*   [WP-Shopify](https://github.com/funkhaus/wp-shopify) backend
+*   [Vue](https://vuejs.org/)
+*   [Vuex](https://vuex.vuejs.org/)
+*   Shopify
 
 ## Installation
 
 1.  Follow the instructions on the [WP plugin](https://github.com/funkhaus/wp-shopify) repo to install on the back-end.
 1.  `npm install wp-shopify`
-1.  In your main JS file:
-    ```js
-    import WpShopify from 'wp-shopify'
-    Vue.use(WpShopify)
-    ```
+1.  Set up the Vuex store:
+
+    1.  If you're already using a store, incorporate it as a [module](https://vuex.vuejs.org/en/modules.html):
+        ```js
+        import { store as shopify } from 'wp-shopify'
+        new Vuex.Store({
+            ...
+            modules: {
+                shopify
+            },
+            ...
+        })
+        ```
+    1.  If you're not using a store, you can set the wp-shopify store as the main one in your app setup:
+
+        ```js
+        import { store as shopify } from 'wp-shopify'
+
+        new Vue({
+            store: shopify
+        })
+        ```
+
 1.  In any component you want to have wp-shopify data or actions:
 
     ```js

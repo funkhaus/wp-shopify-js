@@ -34,7 +34,7 @@ export default {
             this.shopifyDomain ||
             _get(this.$store, 'state.site.shopifyDomain', '')
 
-        const data = await this.$shopify.dispatch('GET_PRODUCT_DATA', {
+        const data = await this.$store.dispatch('GET_PRODUCT_DATA', {
             shopifyId,
             domain,
             token
@@ -54,7 +54,7 @@ export default {
     },
     methods: {
         addToCart(evt, quantity = 1) {
-            this.$shopify.commit('ADD_TO_CART', {
+            this.$store.commit('ADD_TO_CART', {
                 variantId: this.selectedVariant.id,
                 productId: this.productId,
                 wpUrl: this.productData.wpUrl,
@@ -62,7 +62,7 @@ export default {
             })
         },
         removeFromCart(evt) {
-            this.$shopify.commit('REMOVE_FROM_CART', this.selectedVariant)
+            this.$store.commit('REMOVE_FROM_CART', this.selectedVariant)
         }
     }
 }
