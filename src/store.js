@@ -55,26 +55,20 @@ export default {
         UPDATE_CACHED_RESULT(state, { shopifyId, data }) {
             state.productData[shopifyId] = data
         },
-        ADD_TO_CART(state, { variantId, productId, wpUrl, quantity }) {
+        ADD_TO_CART(state, { variantId, productId, wp, quantity }) {
             // default to 1 of item
             quantity = quantity || 1
             variantId = variantId || productId
 
-            // cancel if already exists
-            // if (state.cart.some(item => item.variantId == variantId)) {
-            //     return
-            // }
+            // TODO: Increment if already exists
 
-            Vue.set(state.cart, state.cart.length, {
+            // Add to cart
+            state.cart.push({
                 variantId,
                 productId,
-                wpUrl,
+                wp,
                 quantity
             })
-
-            //Vue.set(state, 'cart', state.cart)
-
-            console.log(state.cart)
 
             // otherwise, add and set quantity to desired value
             // state.cart = [1, 2, 3]
@@ -90,6 +84,7 @@ export default {
 
             // console.log(state.cart)
         }
+        // TODO: Remove from cart
         // REMOVE_FROM_CART(state, variant) {
         //     const index = state.cart.findIndex(
         //         entry => entry.item.id == variant.id
@@ -129,18 +124,21 @@ export default {
             )
             const topLevelData = _get(result, 'data.node', {})
 
-            // add WP ID
+            // add WP info
             const url =
                 location.origin +
                 `/wp-admin/admin-ajax.php?action=wp_url_from_product_id&product_id=${shopifyId}`
-            const wpUrl = await fetch(url).then(res => res.text())
+            const wp = await fetch(url).then(res => res.json())
 
             // build result
             const dataToSave = {
                 variants,
                 title: topLevelData.title,
                 descriptionHtml: topLevelData.descriptionHtml,
-                wpUrl
+                wp: {
+                    path: wp.relativePath,
+                    featuredAttachment: wp.featuredAttachment
+                }
             }
 
             // save result

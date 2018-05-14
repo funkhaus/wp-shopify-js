@@ -57,7 +57,7 @@ export default {
             this.$store.commit('ADD_TO_CART', {
                 variantId: this.selectedVariant.id,
                 productId: this.productId,
-                wpUrl: this.productData.wpUrl,
+                wp: this.productData.wp,
                 quantity
             })
         },
