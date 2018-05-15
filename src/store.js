@@ -51,17 +51,18 @@ export default {
                 const newQuantity =
                     changeBy === undefined ? quantity : oldQuantity + changeBy
                 state.cart[index].quantity = newQuantity
+
+                updateLocalStorage(state.cart)
+            }
+        },
+        REMOVE_FROM_CART(state, { variantId }) {
+            const index = state.cart.findIndex(i => i.variantId == variantId)
+
+            if (index != -1) {
+                state.cart.splice(index, 1)
+                updateLocalStorage(state.cart)
             }
         }
-        // TODO: Remove from cart
-        // REMOVE_FROM_CART(state, variant) {
-        //     const index = state.cart.findIndex(
-        //         entry => entry.item.id == variant.id
-        //     )
-        //     if (index != -1) {
-        //         state.cart.splice(index, 1)
-        //     }
-        // }
     },
     actions: {
         async GET_PRODUCT_DATA(
