@@ -175,19 +175,16 @@ With this plugin, you can tap into Shopify as the source of truth for prices, av
     </script>
     ```
 
-## Usage
-
 ## Reference
-
-### Store
 
 ### Mixin
 
 Any component with the wp-shopify mixin gets the following properties:
 
 *   **Props**
+    Note that you don't need to set these in most instances - if you're using Vuepress, they'll be populated already. You can override any of the Vuepress defaults with the props below.
 
-    *   `productId` - String or Number, default empty
+    *   `productId` - String or Number, default pulled from `$store`
         Shopify product ID. For a single product, use:
 
         `<single-product :product-id="$store.getters.post.productId"/>`
@@ -198,10 +195,10 @@ Any component with the wp-shopify mixin gets the following properties:
 
         The `productId` will be used for both the query to Shopify as well as the key for caching product data.
 
-    *   `shopifyDomain`- String, default empty
+    *   `shopifyDomain`- String, default pulled from `$store`
         Domain of the Shopify store. The backend usually sets this automatically, so most of the time you don't need to worry about it.
 
-    *   `storefrontToken` - String, default empty
+    *   `storefrontToken` - String, default pulled from `$store`
         Storefront Token for the Shopify store. The backend usually sets this automatically, so most of the time you don't need to worry about it.
 
 *   **Data**
@@ -229,16 +226,90 @@ Any component with the wp-shopify mixin gets the following properties:
         // Description HTML - available, but recommended to use WordPress content for faster load times
         descriptionHtml: '',
 
-        // URL to WordPress page
-        wpUrl: 'https://your-site.com/products/product-name'
+        // Information pulled from WordPress
+        wp: {
+            // Relative path to this product's page
+            path: '/products/product-name',
+            // Serialized Rest-Easy attachment for this product's featured image
+            featuredAttachment: Object
+        }
         ```
+
+    *   `selectedVariantIndex` - default `0`
+        Variant currently selected by the user.
+
+    *   `checkoutUrl` - default empty string
+        URL to Shopify checkout. Automatically updated whenever the cart is updated.
 
 *   **Mounted**
 
-    WP-Shopify's `mounted` function takes care of fetching a product's data from Shopify using the provided ID, Shopify domain, and Storefront token.
+    The mixin's `mounted` function takes care of fetching a product's data from Shopify using the provided ID, Shopify domain, and Storefront token.
 
     It dispatches the `GET_PRODUCT_DATA` action on the WP-Shopify store, which does the following:
 
     1.  Checks for the product ID in the local cache. Returns cached value if found.
     1.  Builds and executes a GraphQL query for the desired product.
     1.  Caches and returns the parsed result of the query.
+
+*   **Methods**
+
+    *   `addToCart(event, quantity = 1)`
+        Add a given quantity of the currently selected variant to the cart.
+
+    *   `removeFromCart()`
+        Remove all of the given variant from the cart
+
+    *   `async getCheckoutUrl({})`
+        Get the Shopify checkout URL from the given cart. Accepts one object as an argument that can have `domain` and `token` values, though these are automatically populated by wp-shopify. You shouldn't need to call this in most cases - the checkout URL is available in `data` and modified each time the cart is modified.
+
+    *   `async updateCheckoutUrl()`
+        Update the `checkoutUrl` of this instance. You shouldn't need to call this in most cases - the checkout URL is available in `data` and modified each time the cart is modified.
+
+### Store
+
+#### State
+
+wp-shopify's `store.state` consists of:
+
+*   `productData`: Object, default empty
+    Cache of all product data retrieved from Shopify. You shouldn't need to access this directly in most cases.
+
+*   `cart`: Array, default empty
+    Current Shopify cart. Contains an array of products in the following format:
+
+    ```js
+    {
+        productId: 'String, Shopify product ID',
+        quantity: 1,
+        title: 'String, product title',
+        variantId: 'String, Shopify variant ID',
+        // WordPress information
+        wp: {
+            // rest-easy serialized featured image
+            featuredAttachment: {},
+            path: '/relative/path/to/product'
+        }
+    }
+    ```
+
+*   `cartVersion`: Int, default 0
+    Version of the Shopify cart. Since we can't watch the cart for nested values like quantity, this value is incremented every time the cart is modified.
+
+#### Mutations
+
+You can `commit` any of the following mutations:
+
+*   `UPDATE_CACHED_RESULT`
+*   `ADD_TO_CART`
+*   `SET_QUANTITY`
+*   `REMOVE_FROM_CART`
+
+#### Actions
+
+You can `dispatch` any of the following actions:
+
+*   `GET_PRODUCT_DATA`
+
+---
+
+Version 1.0.2
