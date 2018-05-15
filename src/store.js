@@ -1,55 +1,15 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import _get from 'lodash.get'
+import { buildProductQueryBody, executeQuery } from './query-functions'
+import { updateLocalStorage, loadCart, clearCart } from './local-storage'
 
 Vue.use(Vuex)
-
-const buildProductQueryBody = function(shopifyId) {
-    return `
-    {
-      node(id: "${shopifyId}") {
-        id
-        ... on Product {
-          title
-          descriptionHtml
-          variants(first: 250) {
-            edges {
-              node {
-                price
-                title
-                availableForSale
-                id
-              }
-            }
-          }
-        }
-      }
-    }
-`
-}
-
-const executeQuery = async function({ domain, token, query }) {
-    return await fetch(`https://${domain}/api/graphql`, {
-        method: 'POST',
-        headers: new Headers({
-            'Content-Type': 'application/graphql',
-            'X-Shopify-Storefront-Access-Token': token
-        }),
-        body: query
-    })
-        .then(res => {
-            if (!res.ok) {
-                throw Error(response.statusText)
-            }
-            return res.json()
-        })
-        .catch(e => console.error(e))
-}
 
 export default {
     state: {
         productData: {},
-        cart: []
+        cart: loadCart()
     },
     mutations: {
         UPDATE_CACHED_RESULT(state, { shopifyId, data }) {
@@ -69,6 +29,9 @@ export default {
                 wp,
                 quantity
             })
+
+            // Update storage
+            updateLocalStorage(state.cart)
 
             // otherwise, add and set quantity to desired value
             // state.cart = [1, 2, 3]
