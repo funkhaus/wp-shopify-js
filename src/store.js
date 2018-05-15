@@ -42,6 +42,16 @@ export default {
             // ])
 
             // console.log(state.cart)
+        },
+        SET_QUANTITY(state, { variantId, quantity, changeBy }) {
+            const index = state.cart.findIndex(i => i.variantId == variantId)
+
+            if (index >= 0) {
+                const oldQuantity = state.cart[index].quantity
+                const newQuantity =
+                    changeBy === undefined ? quantity : oldQuantity + changeBy
+                state.cart[index].quantity = newQuantity
+            }
         }
         // TODO: Remove from cart
         // REMOVE_FROM_CART(state, variant) {
