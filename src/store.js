@@ -6,6 +6,19 @@ import { updateLocalStorage, loadCart, clearCart } from './local-storage'
 
 Vue.use(Vuex)
 
+const setQuantity = function(state, { variantId, quantity, changeBy }) {
+    const index = state.cart.findIndex(i => i.variantId == variantId)
+
+    if (index >= 0) {
+        const oldQuantity = state.cart[index].quantity
+        const newQuantity =
+            changeBy === undefined ? quantity : oldQuantity + changeBy
+        state.cart[index].quantity = newQuantity
+
+        updateLocalStorage(state.cart)
+    }
+}
+
 export default {
     state: {
         productData: {},
@@ -16,44 +29,24 @@ export default {
             state.productData[shopifyId] = data
         },
         ADD_TO_CART(state, payload) {
-            // default to 1 of item
-            // quantity = quantity || 1
-            // variantId = variantId || productId
-
-            // TODO: Increment if already exists
-
-            // Add to cart
-            payload.quantity = 1
-            state.cart.push(payload)
+            const index = state.cart.findIndex(
+                i => i.variantId == payload.variantId
+            )
+            if (index >= 0) {
+                setQuantity(state, {
+                    variantId: payload.variantId,
+                    changeBy: 1
+                })
+            } else {
+                payload.quantity = 1
+                state.cart.push(payload)
+            }
 
             // Update storage
             updateLocalStorage(state.cart)
-
-            // otherwise, add and set quantity to desired value
-            // state.cart = [1, 2, 3]
-            // Vue.set(state, 'cart', [
-            //     ...state.cart,
-            //     {
-            //         variantId,
-            //         productId,
-            //         wpUrl,
-            //         quantity
-            //     }
-            // ])
-
-            // console.log(state.cart)
         },
         SET_QUANTITY(state, { variantId, quantity, changeBy }) {
-            const index = state.cart.findIndex(i => i.variantId == variantId)
-
-            if (index >= 0) {
-                const oldQuantity = state.cart[index].quantity
-                const newQuantity =
-                    changeBy === undefined ? quantity : oldQuantity + changeBy
-                state.cart[index].quantity = newQuantity
-
-                updateLocalStorage(state.cart)
-            }
+            setQuantity(state, { variantId, quantity, changeBy })
         },
         REMOVE_FROM_CART(state, { variantId }) {
             const index = state.cart.findIndex(i => i.variantId == variantId)
