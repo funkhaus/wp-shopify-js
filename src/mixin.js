@@ -1,4 +1,6 @@
 import _get from 'lodash.get'
+import { buildCheckoutUrlQueryBody, executeQuery } from './query-functions'
+import { loadCart } from './local-storage'
 
 export default {
     props: {
@@ -64,6 +66,26 @@ export default {
         },
         removeFromCart(evt) {
             this.$store.commit('REMOVE_FROM_CART', this.selectedVariant)
+        },
+        async getCheckoutUrl({ domain, token }) {
+            // load cart
+            const cart = loadCart()
+
+            // build query
+            const query = buildCheckoutUrlQueryBody(this.storefrontToken, cart)
+
+            // execute query
+            const res = await executeQuery({
+                domain:
+                    domain || _get(this.$store, 'state.site.shopifyDomain', ''),
+                token:
+                    token ||
+                    _get(this.$store, 'state.site.storefrontToken', ''),
+                query
+            })
+
+            // get checkout URL or an error
+            return _get(res, 'data.checkoutCreate.checkout.webUrl', '#error')
         }
     }
 }

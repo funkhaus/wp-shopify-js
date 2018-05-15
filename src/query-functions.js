@@ -1,4 +1,6 @@
-// Query builder
+import _get from 'lodash.get'
+
+// Single product query builder
 export const buildProductQueryBody = function(shopifyId) {
     return `
     {
@@ -23,6 +25,28 @@ export const buildProductQueryBody = function(shopifyId) {
 `
 }
 
+// Checkout URL query builder
+export const buildCheckoutUrlQueryBody = function(shopifyId, cart) {
+    const lineItems = cart.map(item => {
+        return `{ variantId: "${item.variantId}", quantity: ${item.quantity} },`
+    })
+
+    // const lineItemsString = JSON.stringify(lineItems)
+
+    return `
+    mutation {
+        checkoutCreate(input: {
+                lineItems: [${lineItems}]
+            }) {
+            checkout {
+                webUrl
+            }
+        }
+    }
+    `
+}
+
+// Generic query executor
 export const executeQuery = async function({ domain, token, query }) {
     return await fetch(`https://${domain}/api/graphql`, {
         method: 'POST',
