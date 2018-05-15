@@ -28,7 +28,7 @@ export const buildProductQueryBody = function(shopifyId) {
 // Checkout URL query builder
 export const buildCheckoutUrlQueryBody = function(shopifyId, cart) {
     const lineItems = cart.map(item => {
-        return `{ variantId: "${item.variantId}", quantity: ${item.quantity} },`
+        return `{ variantId: "${item.variantId}", quantity: ${item.quantity} }`
     })
 
     // const lineItemsString = JSON.stringify(lineItems)
