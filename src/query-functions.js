@@ -31,8 +31,6 @@ export const buildCheckoutUrlQueryBody = function(shopifyId, cart) {
         return `{ variantId: "${item.variantId}", quantity: ${item.quantity} }`
     })
 
-    // const lineItemsString = JSON.stringify(lineItems)
-
     return `
     mutation {
         checkoutCreate(input: {

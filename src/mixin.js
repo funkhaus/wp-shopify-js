@@ -20,15 +20,22 @@ export default {
     data() {
         return {
             productData: null,
-            selectedVariantIndex: 0
+            selectedVariantIndex: 0,
+            checkoutUrl: ''
+        }
+    },
+    watch: {
+        '$store.state.shopify.cartVersion'(newVal) {
+            this.updateCheckoutUrl()
         }
     },
     async mounted() {
-        if (!this.productId) {
+        if (!this.cmpProductId) {
             return
         }
 
-        const shopifyId = this.productId
+        // fetch product data on mount - requires product ID
+        const shopifyId = this.cmpProductId
         const token =
             this.storefrontToken ||
             _get(this.$store, 'state.site.storefrontToken', '')
@@ -42,8 +49,16 @@ export default {
             token
         })
         this.productData = data
+
+        this.updateCheckoutUrl()
     },
     computed: {
+        cmpProductId() {
+            return (
+                this.productId ||
+                _get(this.$store, 'getters.post.productId', '')
+            )
+        },
         price() {
             return _get(this.selectedVariant, 'price', '0.00')
         },
@@ -58,7 +73,7 @@ export default {
         addToCart(evt, quantity = 1) {
             this.$store.commit('ADD_TO_CART', {
                 variantId: this.selectedVariant.id,
-                productId: this.productId,
+                productId: this.cmpProductId,
                 title: this.productData.title,
                 wp: this.productData.wp,
                 quantity
@@ -67,7 +82,9 @@ export default {
         removeFromCart(evt) {
             this.$store.commit('REMOVE_FROM_CART', this.selectedVariant)
         },
-        async getCheckoutUrl({ domain, token }) {
+        async getCheckoutUrl(settings) {
+            settings = settings || {}
+
             // load cart
             const cart = loadCart()
 
@@ -77,15 +94,19 @@ export default {
             // execute query
             const res = await executeQuery({
                 domain:
-                    domain || _get(this.$store, 'state.site.shopifyDomain', ''),
+                    settings.domain ||
+                    _get(this.$store, 'state.site.shopifyDomain', ''),
                 token:
-                    token ||
+                    settings.token ||
                     _get(this.$store, 'state.site.storefrontToken', ''),
                 query
             })
 
             // get checkout URL or an error
             return _get(res, 'data.checkoutCreate.checkout.webUrl', '#error')
+        },
+        async updateCheckoutUrl() {
+            this.checkoutUrl = await this.getCheckoutUrl()
         }
     }
 }

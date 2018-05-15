@@ -6,6 +6,8 @@ import { updateLocalStorage, loadCart, clearCart } from './local-storage'
 
 Vue.use(Vuex)
 
+// Set quantity of a given item in a cart
+// (split into separate function so that multiple mutations can use)
 const setQuantity = function(state, { variantId, quantity, changeBy }) {
     const index = state.cart.findIndex(i => i.variantId == variantId)
 
@@ -15,6 +17,7 @@ const setQuantity = function(state, { variantId, quantity, changeBy }) {
             changeBy === undefined ? quantity : oldQuantity + changeBy
         state.cart[index].quantity = newQuantity
 
+        state.cartVersion++
         updateLocalStorage(state.cart)
     }
 }
@@ -22,30 +25,40 @@ const setQuantity = function(state, { variantId, quantity, changeBy }) {
 export default {
     state: {
         productData: {},
-        cart: loadCart()
+        // load initial cart state from localStorage (defaults to empty array)
+        cart: loadCart(),
+        // since we can't deep-watch the cart for quantities, etc, we'll
+        // watch this value and increment every time the cart is modified
+        cartVersion: 0
     },
     mutations: {
         UPDATE_CACHED_RESULT(state, { shopifyId, data }) {
             state.productData[shopifyId] = data
         },
         ADD_TO_CART(state, payload) {
+            // check if the variant already exists in the cart
             const index = state.cart.findIndex(
                 i => i.variantId == payload.variantId
             )
+
             if (index >= 0) {
+                // if it exists, add 1 to the quantity
                 setQuantity(state, {
                     variantId: payload.variantId,
                     changeBy: 1
                 })
             } else {
+                // if it doesn't exist, push to cart with quantity of 1
                 payload.quantity = 1
                 state.cart.push(payload)
             }
 
             // Update storage
+            state.cartVersion++
             updateLocalStorage(state.cart)
         },
         SET_QUANTITY(state, { variantId, quantity, changeBy }) {
+            // proxy to function declared above
             setQuantity(state, { variantId, quantity, changeBy })
         },
         REMOVE_FROM_CART(state, { variantId }) {
@@ -53,6 +66,7 @@ export default {
 
             if (index != -1) {
                 state.cart.splice(index, 1)
+                state.cartVersion++
                 updateLocalStorage(state.cart)
             }
         }
@@ -66,16 +80,6 @@ export default {
             if (state.productData[shopifyId]) {
                 return state.productData[shopifyId]
             }
-            // TODO: implement checking for cached variants
-            // } else if (
-            //     Object.keys(state.productData)
-            //         .map(key => {
-            //             const product = state.productData[key]
-            //             return false
-            //         })
-            //         .some(res => res)
-            // ) {
-            // }
 
             // build graphql query
             const query = buildProductQueryBody(shopifyId)
@@ -88,9 +92,7 @@ export default {
             const topLevelData = _get(result, 'data.node', {})
 
             // add WP info
-            const url =
-                location.origin +
-                `/wp-admin/admin-ajax.php?action=wp_url_from_product_id&product_id=${shopifyId}`
+            const url = `/wp-admin/admin-ajax.php?action=wp_url_from_product_id&product_id=${shopifyId}`
             const wp = await fetch(url).then(res => res.json())
 
             // build result
