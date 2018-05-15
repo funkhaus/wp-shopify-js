@@ -2,6 +2,14 @@ This repo is the Vue mixin + store module for [WP-Shopify](https://github.com/fu
 
 With this plugin, you can tap into Shopify as the source of truth for prices, availability, variants, and more when displaying products on your WP-Shopify site.
 
+## Table of Contents
+
+1.  [Prerequisites](#prerequisites)
+1.  [Installation](#installation)
+1.  [Reference](#reference)
+    1.  [Mixin](#mixin)
+    1.  [Store](#store)
+
 ## Prerequisites
 
 *   [WP-Shopify](https://github.com/funkhaus/wp-shopify) backend
