@@ -15,20 +15,16 @@ export default {
         UPDATE_CACHED_RESULT(state, { shopifyId, data }) {
             state.productData[shopifyId] = data
         },
-        ADD_TO_CART(state, { variantId, productId, wp, quantity }) {
+        ADD_TO_CART(state, payload) {
             // default to 1 of item
-            quantity = quantity || 1
-            variantId = variantId || productId
+            // quantity = quantity || 1
+            // variantId = variantId || productId
 
             // TODO: Increment if already exists
 
             // Add to cart
-            state.cart.push({
-                variantId,
-                productId,
-                wp,
-                quantity
-            })
+            payload.quantity = 1
+            state.cart.push(payload)
 
             // Update storage
             updateLocalStorage(state.cart)
