@@ -30,25 +30,23 @@ export default {
         }
     },
     async mounted() {
-        if (!this.cmpProductId) {
-            return
+        if (this.cmpProductId) {
+            // fetch product data on mount - requires product ID
+            const shopifyId = this.cmpProductId
+            const token =
+                this.storefrontToken ||
+                _get(this.$store, 'state.site.storefrontToken', '')
+            const domain =
+                this.shopifyDomain ||
+                _get(this.$store, 'state.site.shopifyDomain', '')
+
+            const data = await this.$store.dispatch('GET_PRODUCT_DATA', {
+                shopifyId,
+                domain,
+                token
+            })
+            this.productData = data
         }
-
-        // fetch product data on mount - requires product ID
-        const shopifyId = this.cmpProductId
-        const token =
-            this.storefrontToken ||
-            _get(this.$store, 'state.site.storefrontToken', '')
-        const domain =
-            this.shopifyDomain ||
-            _get(this.$store, 'state.site.shopifyDomain', '')
-
-        const data = await this.$store.dispatch('GET_PRODUCT_DATA', {
-            shopifyId,
-            domain,
-            token
-        })
-        this.productData = data
 
         this.updateCheckoutUrl()
     },
