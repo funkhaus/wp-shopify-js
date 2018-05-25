@@ -21,12 +21,13 @@ export default {
         return {
             productData: null,
             selectedVariantIndex: 0,
-            checkoutUrl: ''
+            checkoutUrl: '',
+            checkoutSubtotal: ''
         }
     },
     watch: {
         '$store.state.shopify.cartVersion'(newVal) {
-            this.updateCheckoutUrl()
+            this.updateCheckout()
         }
     },
     async mounted() {
@@ -48,7 +49,7 @@ export default {
             this.productData = data
         }
 
-        this.updateCheckoutUrl()
+        this.updateCheckout()
     },
     computed: {
         cmpProductId() {
@@ -80,7 +81,7 @@ export default {
         removeFromCart(evt) {
             this.$store.commit('REMOVE_FROM_CART', this.selectedVariant)
         },
-        async getCheckoutUrl(settings) {
+        async getCheckoutInfo(settings) {
             settings = settings || {}
 
             // load cart
@@ -101,10 +102,19 @@ export default {
             })
 
             // get checkout URL or an error
-            return _get(res, 'data.checkoutCreate.checkout.webUrl', '#error')
+            return {
+                url: _get(res, 'data.checkoutCreate.checkout.webUrl', '#error'),
+                subtotal: _get(
+                    res,
+                    'data.checkoutCreate.checkout.subtotalPrice',
+                    '#error'
+                )
+            }
         },
-        async updateCheckoutUrl() {
-            this.checkoutUrl = await this.getCheckoutUrl()
+        async updateCheckout() {
+            const updatedCheckout = await this.getCheckoutUrl()
+            this.checkoutUrl = updatedCheckout.url
+            this.checkoutSubtotal = updatedCheckout.subtotal
         }
     }
 }
