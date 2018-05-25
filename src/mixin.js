@@ -22,7 +22,9 @@ export default {
             productData: null,
             selectedVariantIndex: 0,
             checkoutUrl: '',
-            checkoutSubtotal: ''
+            checkoutSubtotal: '',
+            token: '',
+            domain: ''
         }
     },
     watch: {
@@ -31,20 +33,21 @@ export default {
         }
     },
     async mounted() {
+        this.token =
+            this.storefrontToken ||
+            _get(this.$store, 'state.site.storefrontToken', '')
+        this.domain =
+            this.shopifyDomain ||
+            _get(this.$store, 'state.site.shopifyDomain', '')
+
         if (this.cmpProductId) {
             // fetch product data on mount - requires product ID
             const shopifyId = this.cmpProductId
-            const token =
-                this.storefrontToken ||
-                _get(this.$store, 'state.site.storefrontToken', '')
-            const domain =
-                this.shopifyDomain ||
-                _get(this.$store, 'state.site.shopifyDomain', '')
 
             const data = await this.$store.dispatch('GET_PRODUCT_DATA', {
                 shopifyId,
-                domain,
-                token
+                domain: this.domain,
+                token: this.token
             })
             this.productData = data
         }
@@ -112,9 +115,17 @@ export default {
             }
         },
         async updateCheckout() {
-            const updatedCheckout = await this.getCheckoutUrl()
+            const updatedCheckout = await this.getCheckoutInfo()
             this.checkoutUrl = updatedCheckout.url
             this.checkoutSubtotal = updatedCheckout.subtotal
+        },
+        async getProduct(id) {
+            const result = await this.$store.dispatch('GET_PRODUCT_DATA', {
+                shopifyId: id,
+                domain: this.domain,
+                token: this.token
+            })
+            return result
         }
     }
 }
