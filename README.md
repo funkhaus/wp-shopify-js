@@ -320,4 +320,4 @@ You can `dispatch` any of the following actions:
 
 ---
 
-Version 1.0.3
+Version 1.0.6
