@@ -203,12 +203,6 @@ Any component with the wp-shopify mixin gets the following properties:
 
         The `productId` will be used for both the query to Shopify as well as the key for caching product data.
 
-    *   `shopifyDomain`- String, default pulled from `$store`
-        Domain of the Shopify store. The backend usually sets this automatically, so most of the time you don't need to worry about it.
-
-    *   `storefrontToken` - String, default pulled from `$store`
-        Storefront Token for the Shopify store. The backend usually sets this automatically, so most of the time you don't need to worry about it.
-
 *   **Data**
 
     *   `productData` - default `null`
@@ -249,7 +243,16 @@ Any component with the wp-shopify mixin gets the following properties:
     *   `checkoutUrl` - default empty string
         URL to Shopify checkout. Automatically updated whenever the cart is updated.
 
-*   **Mounted**
+    *   `checkoutSubtotal` - default empty string
+        Checkout subtotal, not including taxes or shipping.
+
+    *   `domain`- String, default pulled from `$store`
+        Domain of the Shopify store. The backend usually sets this automatically, so most of the time you don't need to worry about it.
+
+    *   `token` - String, default pulled from `$store`
+        Storefront Token for the Shopify store. The backend usually sets this automatically, so most of the time you don't need to worry about it.
+
+-   **Mounted**
 
     The mixin's `mounted` function takes care of fetching a product's data from Shopify using the provided ID, Shopify domain, and Storefront token.
 
@@ -259,7 +262,7 @@ Any component with the wp-shopify mixin gets the following properties:
     1.  Builds and executes a GraphQL query for the desired product.
     1.  Caches and returns the parsed result of the query.
 
-*   **Methods**
+-   **Methods**
 
     *   `addToCart(event, quantity = 1)`
         Add a given quantity of the currently selected variant to the cart.
@@ -272,6 +275,9 @@ Any component with the wp-shopify mixin gets the following properties:
 
     *   `async updateCheckoutUrl()`
         Update the `checkoutUrl` of this instance. You shouldn't need to call this in most cases - the checkout URL is available in `data` and modified each time the cart is modified.
+
+    *   `async getProduct(id)`
+        Get product info for a given Shopify ID and save in the cache.
 
 ### Store
 
@@ -308,9 +314,49 @@ wp-shopify's `store.state` consists of:
 You can `commit` any of the following mutations:
 
 *   `UPDATE_CACHED_RESULT`
+
+    You shouldn't need to use this in most cases - wp-shopify will handle its own product data cache.
+
+    ```js
+    this.$store.commit('UPDATE_CACHED_RESULT', {
+        shopifyId: // string - ID of Shopify product
+        data: // anything - new data to cache for give Shopify product
+    })
+    ```
+
 *   `ADD_TO_CART`
+
+    Add a single instance of a given product variant to the user's cart.
+
+    ```js
+    this.$store.commit('ADD_TO_CART', {
+        variantId: // string - ID of Shopify product variant
+    })
+    ```
+
 *   `SET_QUANTITY`
+
+    Set the quantity for a given product variant in the user's cart. Either change to a new value completely or add/subtract a given number.
+
+    Requires either `quantity` for the former or `changeBy` for the latter.
+
+    ```js
+    this.$store.commit('SET_QUANTITY', {
+        variantId: // string - ID of Shopify product variant
+        quantity: // int, optional - new quantity
+        changeBy: // int, optional - change existing quantity by this number
+    })
+    ```
+
 *   `REMOVE_FROM_CART`
+
+    Removes a given variant from the cart.
+
+    ```js
+    this.$store.commit('REMOVE_FROM_CART', {
+        variantId: // string - ID of Shopify product variant
+    })
+    ```
 
 #### Actions
 
@@ -318,6 +364,14 @@ You can `dispatch` any of the following actions:
 
 *   `GET_PRODUCT_DATA`
 
----
+    Retrieve cached product data or, if no data exist yet, fetch from Shopify and store in cache.
 
-Version 1.0.6
+    Usually it's better to call `getProduct(id)` from the mixin, since it handles `domain` and `token` automatically.
+
+    ```js
+    const productData = await this.$store.dispatch('GET_PRODUCT_DATA', {
+        shopifyId: // string - ID of Shopify product
+        domain: // string - domain of Shopify store
+        token: // string - Storefront API token
+    })
+    ```
