@@ -17,6 +17,11 @@ const setQuantity = function(state, { variantId, quantity, changeBy }) {
             changeBy === undefined ? quantity : oldQuantity + changeBy
         state.cart[index].quantity = newQuantity
 
+        // remove if <= 0
+        if (newQuantity <= 0) {
+            state.cart.splice(index, 1)
+        }
+
         state.cartVersion++
         updateLocalStorage(state.cart)
     }
