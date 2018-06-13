@@ -98,7 +98,9 @@ export default {
 
             // add WP info
             const url = `/wp-admin/admin-ajax.php?action=wp_url_from_product_id&product_id=${shopifyId}`
-            const wp = await fetch(url).then(res => res.json())
+            const wp = await fetch(url, {
+                credentials: 'same-origin'
+            }).then(res => res.json())
 
             // build result
             const dataToSave = {
