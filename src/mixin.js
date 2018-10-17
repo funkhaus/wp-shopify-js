@@ -78,7 +78,8 @@ export default {
                 productId: this.cmpProductId,
                 title: this.productData.title,
                 wp: this.productData.wp,
-                quantity
+                quantity,
+                selectedVariant: this.selectedVariant
             })
         },
         removeFromCart(evt) {

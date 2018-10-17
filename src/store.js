@@ -74,6 +74,10 @@ export default {
                 state.cartVersion++
                 updateLocalStorage(state.cart)
             }
+        },
+        EMPTY_CART(state) {
+            state.cart = []
+            state.cartVersion++
         }
     },
     actions: {

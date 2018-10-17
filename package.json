@@ -1,6 +1,6 @@
 {
     "name": "wp-shopify",
-    "version": "1.0.10",
+    "version": "1.0.11",
     "main": "lib/index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
@@ -8,8 +8,13 @@
         "prepare": "npm run build"
     },
     "babel": {
-        "presets": ["env", "stage-0"],
-        "plugins": ["transform-runtime"]
+        "presets": [
+            "env",
+            "stage-0"
+        ],
+        "plugins": [
+            "transform-runtime"
+        ]
     },
     "prettier": {
         "tabWidth": 4,
@@ -28,6 +33,5 @@
         "vue": "^2.5.13",
         "vuex": "^3.0.1"
     },
-    "description":
-        "Vue mixin + store module for WP-Shopify. Integrates Vue, WordPress, and Shopify."
+    "description": "Vue mixin + store module for WP-Shopify. Integrates Vue, WordPress, and Shopify."
 }
