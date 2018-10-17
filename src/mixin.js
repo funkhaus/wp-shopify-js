@@ -35,7 +35,7 @@ export default {
     async mounted() {
         this.token =
             this.storefrontToken ||
-            _get(this.$store, 'state.site.storefrontToken', '')
+            _get(this.$store, 'state.site.storefrontToken', false)
         this.domain =
             this.shopifyDomain ||
             _get(this.$store, 'state.site.shopifyDomain', '')
