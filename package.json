@@ -5,7 +5,8 @@
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "build": "babel src/** ./index.js -d lib",
-        "prepare": "npm run build"
+        "prepare": "npm run build",
+        "dev": "nodemon --watch ./src --watch index.js --exec npm run build"
     },
     "babel": {
         "presets": [
@@ -30,6 +31,7 @@
         "babel-preset-env": "^1.7.0",
         "babel-preset-stage-0": "^6.24.1",
         "lodash.get": "^4.4.2",
+        "nodemon": "^1.18.4",
         "vue": "^2.5.13",
         "vuex": "^3.0.1"
     },

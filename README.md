@@ -1,6 +1,4 @@
-This repo is the Vue mixin + store module for [WP-Shopify](https://github.com/funkhaus/wp-shopify), which integrates WordPress, Vue, and Shopify.
-
-With this plugin, you can tap into Shopify as the source of truth for prices, availability, variants, and more when displaying products on your WP-Shopify site.
+Vue mixin and store module for [WP-Shopify](https://github.com/funkhaus/wp-shopify), which integrates Vue, Shopify, and (optionally) WordPress.
 
 ## Table of Contents
 
@@ -12,29 +10,33 @@ With this plugin, you can tap into Shopify as the source of truth for prices, av
 
 ## Prerequisites
 
-*   [WP-Shopify](https://github.com/funkhaus/wp-shopify) backend
-*   [Vue](https://vuejs.org/)
-*   [Vuex](https://vuex.vuejs.org/)
-*   Shopify
+-   [Vue](https://vuejs.org/)
+-   [Vuex](https://vuex.vuejs.org/)
+-   Shopify store
+
+Optional:
+
+-   [WP-Shopify](https://github.com/funkhaus/wp-shopify) backend
 
 ## Installation
 
-1.  Follow the instructions on the [WP plugin](https://github.com/funkhaus/wp-shopify) repo to install on the back-end.
+1.  (Optional - WordPress users only) Follow the instructions on the [WordPress plugin](https://github.com/funkhaus/wp-shopify) to install on the back-end.
 1.  `npm install wp-shopify`
 1.  **Set up the Vuex store:**
 
-    1.  If you're already using a store, incorporate wp-shopify as a [module](https://vuex.vuejs.org/en/modules.html):
+    If you're already using a store, incorporate wp-shopify as a [module](https://vuex.vuejs.org/en/modules.html):
+
         ```js
         import { store as shopify } from 'wp-shopify'
+
         new Vuex.Store({
-            ...
-            modules: [
-                shopify
-            ],
-            ...
+            // ...
+            modules: [ shopify ]
+            // ...
         })
         ```
-    1.  If you're not using a store, you can set wp-shopify as the main store:
+
+    If you're not using a store, you can set wp-shopify as the main store:
 
         ```js
         import { store as shopify } from 'wp-shopify'
@@ -189,10 +191,10 @@ With this plugin, you can tap into Shopify as the source of truth for prices, av
 
 Any component with the wp-shopify mixin gets the following properties:
 
-*   **Props**
+-   **Props**
     Note that you don't need to set these in most instances - if you're using Vuepress, they'll be populated already. You can override any of the Vuepress defaults with the props below.
 
-    *   `productId` - String or Number, default pulled from `$store`
+    -   `productId` - String or Number, default pulled from `$store`
         Shopify product ID. For a single product, use:
 
         `<single-product :product-id="$store.getters.post.productId"/>`
@@ -203,9 +205,9 @@ Any component with the wp-shopify mixin gets the following properties:
 
         The `productId` will be used for both the query to Shopify as well as the key for caching product data.
 
-*   **Data**
+-   **Data**
 
-    *   `productData` - default `null`
+    -   `productData` - default `null`
         Data fetched from Shopify and WordPress for this product. `null` if none received yet (or if a rejection is received). Otherwise an object with the following properties:
 
         ```js
@@ -237,22 +239,22 @@ Any component with the wp-shopify mixin gets the following properties:
         }
         ```
 
-    *   `selectedVariantIndex` - default `0`
+    -   `selectedVariantIndex` - default `0`
         Variant currently selected by the user.
 
-    *   `checkoutUrl` - default empty string
+    -   `checkoutUrl` - default empty string
         URL to Shopify checkout. Automatically updated whenever the cart is updated.
 
-    *   `checkoutSubtotal` - default empty string
+    -   `checkoutSubtotal` - default empty string
         Checkout subtotal, not including taxes or shipping.
 
-    *   `domain`- String, default pulled from `$store`
+    -   `domain`- String, default pulled from `$store`
         Domain of the Shopify store. The backend usually sets this automatically, so most of the time you don't need to worry about it.
 
-    *   `token` - String, default pulled from `$store`
+    -   `token` - String, default pulled from `$store`
         Storefront Token for the Shopify store. The backend usually sets this automatically, so most of the time you don't need to worry about it.
 
--   **Mounted**
+*   **Mounted**
 
     The mixin's `mounted` function takes care of fetching a product's data from Shopify using the provided ID, Shopify domain, and Storefront token.
 
@@ -262,21 +264,21 @@ Any component with the wp-shopify mixin gets the following properties:
     1.  Builds and executes a GraphQL query for the desired product.
     1.  Caches and returns the parsed result of the query.
 
--   **Methods**
+*   **Methods**
 
-    *   `addToCart(event, quantity = 1)`
+    -   `addToCart(event, quantity = 1)`
         Add a given quantity of the currently selected variant to the cart.
 
-    *   `removeFromCart()`
+    -   `removeFromCart()`
         Remove all of the given variant from the cart
 
-    *   `async getCheckoutUrl({})`
+    -   `async getCheckoutUrl({})`
         Get the Shopify checkout URL from the given cart. Accepts one object as an argument that can have `domain` and `token` values, though these are automatically populated by wp-shopify. You shouldn't need to call this in most cases - the checkout URL is available in `data` and modified each time the cart is modified.
 
-    *   `async updateCheckoutUrl()`
+    -   `async updateCheckoutUrl()`
         Update the `checkoutUrl` of this instance. You shouldn't need to call this in most cases - the checkout URL is available in `data` and modified each time the cart is modified.
 
-    *   `async getProduct(id)`
+    -   `async getProduct(id)`
         Get product info for a given Shopify ID and save in the cache.
 
 ### Store
@@ -285,10 +287,10 @@ Any component with the wp-shopify mixin gets the following properties:
 
 wp-shopify's `store.state` consists of:
 
-*   `productData`: Object, default empty
+-   `productData`: Object, default empty
     Cache of all product data retrieved from Shopify. You shouldn't need to access this directly in most cases.
 
-*   `cart`: Array, default empty
+-   `cart`: Array, default empty
     Current Shopify cart. Contains an array of products in the following format:
 
     ```js
@@ -306,14 +308,14 @@ wp-shopify's `store.state` consists of:
     }
     ```
 
-*   `cartVersion`: Int, default 0
+-   `cartVersion`: Int, default 0
     Version of the Shopify cart. Since we can't watch the cart for nested values like quantity, this value is incremented every time the cart is modified.
 
 #### Mutations
 
 You can `commit` any of the following mutations:
 
-*   `UPDATE_CACHED_RESULT`
+-   `UPDATE_CACHED_RESULT`
 
     You shouldn't need to use this in most cases - wp-shopify will handle its own product data cache.
 
@@ -324,7 +326,7 @@ You can `commit` any of the following mutations:
     })
     ```
 
-*   `ADD_TO_CART`
+-   `ADD_TO_CART`
 
     Add a single instance of a given product variant to the user's cart.
 
@@ -334,7 +336,7 @@ You can `commit` any of the following mutations:
     })
     ```
 
-*   `SET_QUANTITY`
+-   `SET_QUANTITY`
 
     Set the quantity for a given product variant in the user's cart. Either change to a new value completely or add/subtract a given number.
 
@@ -348,7 +350,7 @@ You can `commit` any of the following mutations:
     })
     ```
 
-*   `REMOVE_FROM_CART`
+-   `REMOVE_FROM_CART`
 
     Removes a given variant from the cart.
 
@@ -362,7 +364,7 @@ You can `commit` any of the following mutations:
 
 You can `dispatch` any of the following actions:
 
-*   `GET_PRODUCT_DATA`
+-   `GET_PRODUCT_DATA`
 
     Retrieve cached product data or, if no data exist yet, fetch from Shopify and store in cache.
 
