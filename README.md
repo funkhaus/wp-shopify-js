@@ -11,7 +11,7 @@ Vue plugin to ease Shopify products and cart management. Can be combined with [W
 
 If you're combining this plugin with its optional [WordPress backend](https://github.com/funkhaus/wp-shopify), follow the instructions on that repo first.
 
-<details><summary>1.  Set up Shopify:</summary>
+<details><summary>1.  Set up Shopify.</summary>
 
 1.  Set up a Shopify store and create a new private app.
 1.  Go to your Shopify admin panel (your-store.myshopify.com/admin).
@@ -26,7 +26,7 @@ If you're combining this plugin with its optional [WordPress backend](https://gi
 </details>
 
 2.  `npm install wp-shopify`
-1.  [Install Vuex](https://vuex.vuejs.org/installation.html)
+1.  [Install Vuex](https://vuex.vuejs.org/installation.html).
 1.  Before creating your Vue instance, install the plugin with:
 
     ```js
