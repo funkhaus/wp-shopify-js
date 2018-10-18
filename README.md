@@ -1,50 +1,38 @@
-Vue mixin and store module for [WP-Shopify](https://github.com/funkhaus/wp-shopify), which integrates Vue, Shopify, and (optionally) WordPress.
+Vue plugin to ease Shopify products and cart management. Can be combined with [WP-Shopify](https://github.com/funkhaus/wp-shopify) for [Vue + WordPress](https://github.com/funkhaus/vuepress).
 
 ## Table of Contents
 
-1.  [Prerequisites](#prerequisites)
 1.  [Installation](#installation)
 1.  [Reference](#reference)
     1.  [Mixin](#mixin)
     1.  [Store](#store)
 
-## Prerequisites
-
--   [Vue](https://vuejs.org/)
--   [Vuex](https://vuex.vuejs.org/)
--   Shopify store
-
-Optional:
-
--   [WP-Shopify](https://github.com/funkhaus/wp-shopify) backend
-
 ## Installation
 
-1.  (Optional - WordPress users only) Follow the instructions on the [WordPress plugin](https://github.com/funkhaus/wp-shopify) to install on the back-end.
+If you're combining this plugin with its optional [WordPress backend](https://github.com/funkhaus/wp-shopify), follow the instructions on that repo first.
+
+1.  Set up Shopify:
+    1.  Set up a Shopify store and create a new private app.
+    1.  Go to your Shopify admin panel (your-store.myshopify.com/admin).
+    1.  Click "Manage Private Apps" at the bottom of the screen. You'll end up on your-store.myshopify.com/admin/apps/private.
+    1.  Click "Create a new private app."
+    1.  Keep the default API permissions and make sure Allow this app to access your storefront data using the Storefront API at the bottom of the screen is checked.
+    1.  Hit Save to continue.
+    1.  Note the Storefront Token on the bottom of the next page:
+        [!Image of the Shopify storefront access token location](docs/storefront-access-token.png)
 1.  `npm install wp-shopify`
-1.  **Set up the Vuex store:**
+1.  Before creating your Vue instance, install the plugin with:
 
-    If you're already using a store, incorporate wp-shopify as a [module](https://vuex.vuejs.org/en/modules.html):
+    ```js
+    import WpShopify from 'wp-shopify'
 
-        ```js
-        import { store as shopify } from 'wp-shopify'
-
-        new Vuex.Store({
-            // ...
-            modules: [ shopify ]
-            // ...
-        })
-        ```
-
-    If you're not using a store, you can set wp-shopify as the main store:
-
-        ```js
-        import { store as shopify } from 'wp-shopify'
-
-        new Vue({
-            store: shopify
-        })
-        ```
+    Vue.use(WpShopify, {
+        domain: // your Shopify domain, formatted: my-site.myshopify.com
+        token: // your Shopify
+        store: store,
+        wordpress: true
+    })
+    ```
 
 1.  **Use in product lists or detail pages:**
 
