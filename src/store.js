@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import _get from 'lodash.get'
+import _get from 'lodash/get'
 import { buildProductQueryBody, executeQuery } from './query-functions'
 import { updateLocalStorage, loadCart, clearCart } from './local-storage'
 
@@ -8,8 +8,8 @@ Vue.use(Vuex)
 
 // Set quantity of a given item in a cart
 // (split into separate function so that multiple mutations can use)
-const setQuantity = function(state, { variantId, quantity, changeBy }) {
-    const index = state.cart.findIndex(i => i.variantId == variantId)
+const setQuantity = function(state, { variant, quantity, changeBy }) {
+    const index = state.cart.findIndex(i => i.variant.id == variant.id)
 
     if (index >= 0) {
         const oldQuantity = state.cart[index].quantity
@@ -43,13 +43,13 @@ export default {
         ADD_TO_CART(state, payload) {
             // check if the variant already exists in the cart
             const index = state.cart.findIndex(
-                i => i.variantId == payload.variantId
+                i => i.variant.id == payload.variant.id
             )
 
             if (index >= 0) {
                 // if it exists, add 1 to the quantity
                 setQuantity(state, {
-                    variantId: payload.variantId,
+                    variant: payload.variant,
                     changeBy: 1
                 })
             } else {
@@ -62,12 +62,12 @@ export default {
             state.cartVersion++
             updateLocalStorage(state.cart)
         },
-        SET_QUANTITY(state, { variantId, quantity, changeBy }) {
+        SET_QUANTITY(state, { variant, quantity, changeBy }) {
             // proxy to function declared above
-            setQuantity(state, { variantId, quantity, changeBy })
+            setQuantity(state, { variant, quantity, changeBy })
         },
-        REMOVE_FROM_CART(state, { variantId }) {
-            const index = state.cart.findIndex(i => i.variantId == variantId)
+        REMOVE_FROM_CART(state, { variant }) {
+            const index = state.cart.findIndex(i => i.variant.id == variant.id)
 
             if (index != -1) {
                 state.cart.splice(index, 1)

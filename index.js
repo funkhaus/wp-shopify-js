@@ -1,9 +1,5 @@
-import mixinOptions from './src/mixin'
-import buildMixin from './src/build-mixin'
-import cache from './src/cache'
-import cart from './src/cart'
-
-export const mixin = mixinOptions
+import mixin from './src/mixin'
+import store from './src/store'
 
 export default {
     install: function(Vue, options = {}) {
@@ -11,30 +7,26 @@ export default {
             domain: null,
             token: null,
             debug: false,
-            cache,
-            cart,
+            store: null,
 
             ...options
         }
 
         // basic usage warning
-        if (options.debug && (!options.domain || !options.token)) {
+        if (!options.domain || !options.token || !options.store) {
             console.error(
-                'You need to set the Shopify domain and token to work correctly.'
+                'You need to set the Shopify domain, Shopify token, and Vuex store for wp-shopify to work correctly. No action taken.'
             )
+            return
         }
 
         // make shopify info accessible anywhere
         Vue.prototype.$shopify = options
 
-        // Define mixin
-        Vue.mixin(
-            buildMixin({
-                vueInstance: Vue,
-                ...options
-            })
-        )
+        // add module to store
+        options.store.registerModule('shopify', store)
 
-        // TODO: Start here
+        // define mixin
+        Vue.mixin(mixin)
     }
 }

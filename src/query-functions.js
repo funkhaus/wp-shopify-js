@@ -1,4 +1,4 @@
-import _get from 'lodash.get'
+import _get from 'lodash/get'
 
 // Single product query builder
 export const buildProductQueryBody = function(shopifyId) {
@@ -29,7 +29,7 @@ export const buildProductQueryBody = function(shopifyId) {
 export const buildCheckoutUrlQueryBody = function(shopifyId, cart) {
     const lineItems = cart.map(item => {
         return `{
-            variantId: "${item.variantId}",
+            variantId: "${item.variant.id}",
             quantity: ${item.quantity} }`
     })
 
