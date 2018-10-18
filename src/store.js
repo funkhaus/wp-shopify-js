@@ -1,7 +1,11 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import _get from 'lodash/get'
-import { buildProductQueryBody, executeQuery } from './query-functions'
+import {
+    buildProductQueryBody,
+    executeQuery,
+    buildCheckoutUrlQueryBody
+} from './query-functions'
 import { updateLocalStorage, loadCart, clearCart } from './local-storage'
 
 Vue.use(Vuex)
@@ -27,14 +31,44 @@ const setQuantity = function(state, { variant, quantity, changeBy }) {
     }
 }
 
+// Rebuild checkout URL and subtotal
+// (split into separate function so that multiple mutations can use)
+const updateCheckout = async function(state) {
+    // build query
+    const query = buildCheckoutUrlQueryBody(state.token, state.cart)
+
+    // execute query
+    const res = await executeQuery({
+        domain: state.domain,
+        token: state.token,
+        query
+    })
+
+    // get checkout URL or an error
+    state.checkoutUrl = _get(
+        res,
+        'data.checkoutCreate.checkout.webUrl',
+        '#error'
+    )
+    state.checkoutSubtotal = _get(
+        res,
+        'data.checkoutCreate.checkout.subtotalPrice',
+        '#error'
+    )
+}
+
 export default {
     state: {
         productData: {},
         // load initial cart state from localStorage (defaults to empty array)
         cart: loadCart(),
+        domain: '',
+        token: '',
         // since we can't deep-watch the cart for quantities, etc, we'll
         // watch this value and increment every time the cart is modified
-        cartVersion: 0
+        cartVersion: 0,
+        checkoutUrl: '',
+        checkoutSubtotal: ''
     },
     mutations: {
         UPDATE_CACHED_RESULT(state, { shopifyId, data }) {
@@ -61,10 +95,14 @@ export default {
             // Update storage
             state.cartVersion++
             updateLocalStorage(state.cart)
+            // Update checkout
+            updateCheckout(state)
         },
         SET_QUANTITY(state, { variant, quantity, changeBy }) {
             // proxy to function declared above
             setQuantity(state, { variant, quantity, changeBy })
+            // Update checkout
+            updateCheckout(state)
         },
         REMOVE_FROM_CART(state, { variant }) {
             const index = state.cart.findIndex(i => i.variant.id == variant.id)
@@ -73,11 +111,28 @@ export default {
                 state.cart.splice(index, 1)
                 state.cartVersion++
                 updateLocalStorage(state.cart)
+                // Update checkout
+                updateCheckout(state)
             }
         },
         EMPTY_CART(state) {
             state.cart = []
             state.cartVersion++
+            // Update checkout
+            updateCheckout(state)
+        },
+        UPDATE_CHECKOUT(state) {
+            updateCheckout(state)
+        },
+        SET_DOMAIN_AND_TOKEN(state, { domain, token, force }) {
+            if (!state.domain || force) {
+                state.domain = domain
+            }
+            if (!state.token || force) {
+                state.token = token
+            }
+
+            updateCheckout(state)
         }
     },
     actions: {
@@ -100,18 +155,22 @@ export default {
             )
             const topLevelData = _get(result, 'data.node', {})
 
-            // add WP info
-            const url = `/wp-admin/admin-ajax.php?action=wp_url_from_product_id&product_id=${shopifyId}`
-            const wp = await fetch(url, {
-                credentials: 'same-origin'
-            }).then(res => res.json())
-
             // build result
             const dataToSave = {
                 variants,
                 title: topLevelData.title,
-                descriptionHtml: topLevelData.descriptionHtml,
-                wp: {
+                descriptionHtml: topLevelData.descriptionHtml
+            }
+
+            // add WP info
+            let wp = null
+            if (this._vm.$shopify.wordpress) {
+                const url = `/wp-admin/admin-ajax.php?action=wp_url_from_product_id&product_id=${shopifyId}`
+                wp = await fetch(url, {
+                    credentials: 'same-origin'
+                }).then(res => res.json())
+
+                dataToSave['wp'] = {
                     path: wp.relativePath,
                     featuredAttachment: wp.featuredAttachment
                 }

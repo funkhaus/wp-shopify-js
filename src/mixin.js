@@ -17,21 +17,31 @@ export default {
         return {
             selectedVariantIndex: 0,
             product: null,
-            cartVersion: 0,
-            checkoutUrl: '',
-            checkoutSubtotal: ''
+            cartVersion: 0
         }
     },
     async mounted() {
         if (this.productId) {
             await this.getProduct(this.productId)
-            this.updateCheckout()
+        }
+
+        if (
+            !this.$store.state.shopify.domain ||
+            !this.$store.state.shopify.token
+        ) {
+            this.$store.commit('SET_DOMAIN_AND_TOKEN', {
+                domain: this.$shopify.domain,
+                token: this.$shopify.token
+            })
         }
     },
     methods: {
         async getProduct(id) {
-            let output = null
-            // TODO: check store
+            let output = _get(
+                this,
+                `$store.state.shopify.productData[${id}]`,
+                false
+            )
 
             if (!output) {
                 // build query to find a product
@@ -82,37 +92,6 @@ export default {
                     ...this.selectedVariant
                 }
             })
-        },
-        async getCheckoutInfo() {
-            // build query
-            const query = buildCheckoutUrlQueryBody(
-                this.$shopify.token,
-                this.$store.state.shopify.cart
-            )
-
-            // execute query
-            const res = await executeQuery({
-                domain: this.$shopify.domain,
-                token: this.$shopify.token,
-                query
-            })
-
-            console.log(res)
-
-            // get checkout URL or an error
-            return {
-                url: _get(res, 'data.checkoutCreate.checkout.webUrl', '#error'),
-                subtotal: _get(
-                    res,
-                    'data.checkoutCreate.checkout.subtotalPrice',
-                    '#error'
-                )
-            }
-        },
-        async updateCheckout() {
-            const updatedCheckout = await this.getCheckoutInfo()
-            this.checkoutUrl = updatedCheckout.url
-            this.checkoutSubtotal = updatedCheckout.subtotal
         }
     },
     computed: {
@@ -120,11 +99,6 @@ export default {
             return this.product
                 ? _get(this.product, `variants[${this.selectedVariantIndex}]`)
                 : null
-        }
-    },
-    watch: {
-        '$store.state.shopify.cartVersion'(newVal) {
-            this.updateCheckout()
         }
     }
 }

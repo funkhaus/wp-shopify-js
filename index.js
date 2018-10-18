@@ -6,8 +6,8 @@ export default {
         options = {
             domain: null,
             token: null,
-            debug: false,
             store: null,
+            wordpress: false,
 
             ...options
         }
