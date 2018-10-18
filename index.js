@@ -1,6 +1,7 @@
 import mixinOptions from './src/mixin'
 import buildMixin from './src/build-mixin'
 import cache from './src/cache'
+import cart from './src/cart'
 
 export const mixin = mixinOptions
 
@@ -11,6 +12,7 @@ export default {
             token: null,
             debug: false,
             cache,
+            cart,
 
             ...options
         }

@@ -13,7 +13,7 @@ export default options => {
         data() {
             return {
                 selectedVariantIndex: 0,
-                fetchedProduct: null
+                lastFetchedProduct: null
             }
         },
         methods: {
@@ -48,7 +48,7 @@ export default options => {
                         .filter(variant => variant)
 
                     // save the result
-                    this.fetchedProduct = output = cache[id] = parsedResult
+                    this.lastFetchedProduct = output = cache[id] = parsedResult
                 }
 
                 return output
@@ -65,13 +65,17 @@ export default options => {
                 const fetchedProduct = await this.getProduct(productId)
 
                 return fetchedProduct.variants[variant]
+            },
+            addToCart(product, variant) {
+                product = product || this.lastFetchedProduct
+                variant = variant || this.selectedVariant
             }
         },
         computed: {
             selectedVariant() {
-                return this.fetchedProduct
+                return this.lastFetchedProduct
                     ? _get(
-                          this.fetchedProduct,
+                          this.lastFetchedProduct,
                           `variants[${this.selectedVariantIndex}]`
                       )
                     : null
