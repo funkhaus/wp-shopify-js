@@ -50,7 +50,7 @@ const updateCheckout = async function(state) {
         'data.checkoutCreate.checkout.webUrl',
         '#error'
     )
-    state.checkoutSubtotal = _get(
+    state.subtotal = _get(
         res,
         'data.checkoutCreate.checkout.subtotalPrice',
         '#error'
@@ -68,7 +68,7 @@ export default {
         // watch this value and increment every time the cart is modified
         cartVersion: 0,
         checkoutUrl: '',
-        checkoutSubtotal: ''
+        subtotal: ''
     },
     mutations: {
         UPDATE_CACHED_RESULT(state, { shopifyId, data }) {
@@ -162,24 +162,7 @@ export default {
                 descriptionHtml: topLevelData.descriptionHtml
             }
 
-            // add WP info
-            let wp = null
-            if (this._vm.$shopify.wordpress) {
-                const url = `/wp-admin/admin-ajax.php?action=wp_url_from_product_id&product_id=${shopifyId}`
-                wp = await fetch(url, {
-                    credentials: 'same-origin'
-                }).then(res => res.json())
-
-                dataToSave['wp'] = {
-                    path: wp.relativePath,
-                    featuredAttachment: wp.featuredAttachment
-                }
-            }
-
-            // save result
-            if (variants.length) {
-                commit('UPDATE_CACHED_RESULT', { shopifyId, data: dataToSave })
-            }
+            commit('UPDATE_CACHED_RESULT', { shopifyId, data: dataToSave })
 
             // return result from cache to guarantee correct info
             return state.productData[shopifyId]

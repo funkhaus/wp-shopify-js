@@ -66,6 +66,26 @@ export default {
                     .map(variant => variant.node || null)
                     .filter(variant => variant)
 
+                // add WP info
+                let wp = null
+                if (this.$shopify.wordpress) {
+                    const url = `/wp-admin/admin-ajax.php?action=wp_url_from_product_id&product_id=${id}`
+                    wp = await fetch(url, {
+                        credentials: 'same-origin'
+                    }).then(res => res.json())
+
+                    parsedResult['wp'] = {
+                        path: wp.relativePath,
+                        featuredAttachment: wp.featuredAttachment
+                    }
+                }
+
+                // save result
+                this.$store.commit('UPDATE_CACHED_RESULT', {
+                    shopifyId: id,
+                    data: parsedResult
+                })
+
                 // save the result
                 this.product = output = parsedResult
             }
