@@ -33,7 +33,7 @@ If you're combining this plugin with its optional [WordPress backend](https://gi
 
     Vue.use(WpShopify, {
         domain: // your Shopify domain, formatted: my-site.myshopify.com
-        token: // your Shopify
+        token: // your Shopify storefront access token
         store: store, // your Vuex store
         wordpress: true // whether or not to include WordPress data - default false
     })
