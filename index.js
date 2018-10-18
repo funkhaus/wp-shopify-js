@@ -1,11 +1,8 @@
 import mixinOptions from './src/mixin'
-import storeModule from './src/store'
 import buildMixin from './src/build-mixin'
 import cache from './src/cache'
 
 export const mixin = mixinOptions
-
-export const store = storeModule
 
 export default {
     install: function(Vue, options = {}) {
@@ -25,8 +22,8 @@ export default {
             )
         }
 
-        // global properties
-        Vue.shopify = options
+        // make shopify info accessible anywhere
+        Vue.prototype.$shopify = options
 
         // Define mixin
         Vue.mixin(

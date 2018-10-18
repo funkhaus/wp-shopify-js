@@ -4,14 +4,18 @@ import cache from './cache'
 
 export default options => {
     return {
-        // data() {
-        //     return {
-        //         shopify: {
-        //             domain: options.domain,
-        //             token: options.token
-        //         }
-        //     }
-        // },
+        props: {
+            productId: {
+                type: String,
+                default: ''
+            }
+        },
+        data() {
+            return {
+                selectedVariantIndex: 0,
+                fetchedProduct: null
+            }
+        },
         methods: {
             async getProduct(id) {
                 let output = cache[id]
@@ -22,13 +26,17 @@ export default options => {
 
                     // execute that query
                     const result = await executeQuery({
-                        domain: options.vueInstance.shopify.domain,
-                        token: options.vueInstance.shopify.token,
+                        domain: this.$shopify.domain,
+                        token: this.$shopify.token,
                         query
                     })
 
                     // parse the result
                     const parsedResult = _get(result, 'data.node', false)
+
+                    if (!parsedResult) {
+                        return null
+                    }
 
                     // extra parsing on the variants
                     parsedResult.variants = _get(
@@ -40,12 +48,33 @@ export default options => {
                         .filter(variant => variant)
 
                     // save the result
-                    cache[id] = parsedResult
-                    // and save the output
-                    output = parsedResult
+                    this.fetchedProduct = output = cache[id] = parsedResult
                 }
 
                 return output
+            },
+            async getVariant(variant, product) {
+                if (product == null) {
+                    product = this.productId
+                }
+
+                const productId = (await this.getProduct(
+                    product && product.id ? product.id : product
+                )).id
+
+                const fetchedProduct = await this.getProduct(productId)
+
+                return fetchedProduct.variants[variant]
+            }
+        },
+        computed: {
+            selectedVariant() {
+                return this.fetchedProduct
+                    ? _get(
+                          this.fetchedProduct,
+                          `variants[${this.selectedVariantIndex}]`
+                      )
+                    : null
             }
         }
     }
