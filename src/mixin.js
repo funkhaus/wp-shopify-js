@@ -33,6 +33,7 @@ export default {
         }
     },
     async mounted() {
+        return
         this.token =
             this.storefrontToken ||
             _get(this.$store, 'state.site.storefrontToken', false)
