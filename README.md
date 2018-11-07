@@ -34,14 +34,68 @@ If you're combining this plugin with its optional [WordPress backend](https://gi
     import store from 'your-main-vuex-store'
 
     Vue.use(WpShopify, {
-        domain: // your Shopify domain, formatted: my-site.myshopify.com
-        token: // your Shopify storefront access token
+        // your Shopify domain, formatted: my-site.myshopify.com
+        // (Vuepress default shown)
+        domain: jsonData.site.shopifyDomain,
+        // your Shopify storefront access token
+        // (Vuepress default shown)
+        token: jsonData.site.storefrontToken,
         store: store, // your Vuex store
         wordpress: true // whether or not to include WordPress data - default false
     })
     ```
 
 That's it! You've got full access to the store module, mixin, and instance variables below.
+
+## Product Templating
+
+If you know the ID of your product, you can retrieve the full object with `getProduct`:
+
+```html
+<template>
+
+    <section>
+        {{ product }}
+    </section>
+
+</template>
+
+<script>
+export default {
+    mounted() {
+        // this is how the WordPress plugin retrieves a product...
+        const productId = this.$store.getters.post.productId
+
+        // ...but any valid ID will work
+        this.product = this.getProduct(productId)
+    }
+}
+</script>
+```
+
+You can also pass the ID as a prop:
+
+`ProductExample.vue`
+
+```html
+<template>
+
+    <div class="product-example">
+        {{ product }}
+    </div>
+
+</template>
+```
+
+`Main.vue`
+
+```html
+<template>
+
+    <product-example :product-id="'your product ID here'"/>
+
+</template>
+```
 
 ## TODO: Update this section
 
