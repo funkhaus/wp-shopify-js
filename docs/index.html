@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>WP-Shopify</title>
+    <meta name="description" content="">
+    
+    
+    <link rel="preload" href="/assets/css/styles.7e94c8e9.css" as="style"><link rel="preload" href="/assets/js/app.7e94c8e9.js" as="script"><link rel="preload" href="/assets/js/3.63654974.js" as="script"><link rel="prefetch" href="/assets/css/1.styles.b05fc641.css"><link rel="prefetch" href="/assets/css/2.styles.a2bd3099.css"><link rel="prefetch" href="/assets/js/1.b05fc641.js"><link rel="prefetch" href="/assets/js/2.a2bd3099.js">
+    <link rel="stylesheet" href="/assets/css/1.styles.b05fc641.css"><link rel="stylesheet" href="/assets/css/2.styles.a2bd3099.css"><link rel="stylesheet" href="/assets/css/styles.7e94c8e9.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container no-sidebar"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-exact-active router-link-active"></a> <div class="links" style="max-width:nullpx;"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <!----></div></header> <div class="sidebar-mask"></div> <div class="sidebar"><!---->  <!----> </div> <div class="page"> <div class="content"><h1 id="wp-shopify"><a href="#wp-shopify" aria-hidden="true" class="header-anchor">#</a> WP-Shopify</h1> <p>Vue plugin to ease Shopify products and cart management. Can be combined with <a href="https://github.com/funkhaus/wp-shopify" target="_blank" rel="noopener noreferrer">WP-Shopify<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a> for <a href="https://github.com/funkhaus/vuepress" target="_blank" rel="noopener noreferrer">Vue + WordPress<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a>.</p> <h2 id="table-of-contents"><a href="#table-of-contents" aria-hidden="true" class="header-anchor">#</a> Table of Contents</h2> <ol><li><a href="#installation">Installation</a></li> <li><a href="#reference">Reference</a> <ol><li><a href="#mixin">Mixin</a></li> <li><a href="#store">Store</a></li></ol></li></ol> <h2 id="installation"><a href="#installation" aria-hidden="true" class="header-anchor">#</a> Installation</h2> <p>If you're combining this plugin with its optional <a href="https://github.com/funkhaus/wp-shopify" target="_blank" rel="noopener noreferrer">WordPress backend<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a>, follow the instructions on that repo first.</p> <details><summary>1.  Set up Shopify.</summary> <ol><li><p>Set up a Shopify store and create a new private app.</p></li> <li><p>Go to your Shopify admin panel (your-store.myshopify.com/admin).</p></li> <li><p>Click &quot;Manage Private Apps&quot; at the bottom of the screen. You'll end up on your-store.myshopify.com/admin/apps/private.</p></li> <li><p>Click &quot;Create a new private app.&quot;</p></li> <li><p>Keep the default API permissions and make sure <code>Allow this app to access your storefront data using the Storefront API</code> at the bottom of the screen is checked.</p></li> <li><p>Hit Save to continue.</p></li> <li><p>Note the Storefront Token on the bottom of the next page:</p> <p><a href="docs/storefront-access-token.png">!Image of the Shopify storefront access token location</a></p></li></ol></details> <ol start="2"><li><p><code>npm install wp-shopify</code></p></li> <li><p><a href="https://vuex.vuejs.org/installation.html" target="_blank" rel="noopener noreferrer">Install Vuex<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a>.</p></li> <li><p>Before creating your Vue instance, install the plugin with:</p> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">import</span> WpShopify <span class="token keyword">from</span> <span class="token string">'wp-shopify'</span>
+<span class="token keyword">import</span> store <span class="token keyword">from</span> <span class="token string">'your-main-vuex-store'</span>
+
+Vue<span class="token punctuation">.</span><span class="token function">use</span><span class="token punctuation">(</span>WpShopify<span class="token punctuation">,</span> <span class="token punctuation">{</span>
+    <span class="token comment">// your Shopify domain, formatted: 'my-site.myshopify.com'</span>
+    <span class="token comment">// (default shown uses jsonData var from Vuepress)</span>
+    domain<span class="token punctuation">:</span> jsonData<span class="token punctuation">.</span>site<span class="token punctuation">.</span>shopifyDomain<span class="token punctuation">,</span>
+    <span class="token comment">// your Shopify storefront access token</span>
+    <span class="token comment">// (default shown uses jsonData var from Vuepress)</span>
+    token<span class="token punctuation">:</span> jsonData<span class="token punctuation">.</span>site<span class="token punctuation">.</span>storefrontToken<span class="token punctuation">,</span>
+    store<span class="token punctuation">:</span> store<span class="token punctuation">,</span> <span class="token comment">// your Vuex store</span>
+    wordpress<span class="token punctuation">:</span> <span class="token boolean">true</span> <span class="token comment">// whether or not to include WordPress data - default false</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre></div></li></ol> <p>That's it! You've got full access to the store module, mixin, and instance variables below.</p> <h2 id="accessing-product-data"><a href="#accessing-product-data" aria-hidden="true" class="header-anchor">#</a> Accessing Product Data</h2> <p>You'll need to save a product locally before displaying its data.</p> <h3 id="vuepress"><a href="#vuepress" aria-hidden="true" class="header-anchor">#</a> Vuepress</h3> <p>If you're using Vuepress:</p> <h2 id="todo-update-this-section"><a href="#todo-update-this-section" aria-hidden="true" class="header-anchor">#</a> TODO: Update this section</h2> <ol><li><p><strong>Use in product lists or detail pages:</strong></p> <p>A single <code>wps-product</code> page might look like this:</p> <div class="language-html extra-class"><pre class="language-html"><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span><span class="token punctuation">&gt;</span></span>
+
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>main</span><span class="token punctuation">&gt;</span></span>
+
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h2</span><span class="token punctuation">&gt;</span></span>{{ $store.getters.post.title }}<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h2</span><span class="token punctuation">&gt;</span></span>
+
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>select</span> <span class="token attr-name">v-model</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">&quot;</span>selectedVariantIndex<span class="token punctuation">&quot;</span></span><span class="token punctuation">&gt;</span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>option</span>
+                <span class="token attr-name">v-for</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">&quot;</span>(variant, i) in variants<span class="token punctuation">&quot;</span></span>
+                <span class="token attr-name">:key</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">&quot;</span>i<span class="token punctuation">&quot;</span></span>
+                <span class="token attr-name">:value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">&quot;</span>i<span class="token punctuation">&quot;</span></span><span class="token punctuation">&gt;</span></span>
+
+                {{ variant.title }}
+
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>option</span><span class="token punctuation">&gt;</span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>select</span><span class="token punctuation">&gt;</span></span>
+
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">@click</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">&quot;</span>addToCart<span class="token punctuation">&quot;</span></span><span class="token punctuation">&gt;</span></span>Add to Cart<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">&gt;</span></span>
+
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>main</span><span class="token punctuation">&gt;</span></span>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">&gt;</span></span>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span><span class="token punctuation">&gt;</span></span><span class="token script language-javascript">
+<span class="token keyword">import</span> <span class="token punctuation">{</span> mixin <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'wp-shopify'</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token punctuation">{</span>
+    mixins<span class="token punctuation">:</span> <span class="token punctuation">[</span>mixin<span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+
+</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">&gt;</span></span>
+</code></pre></div><p>And an annotated version of the above:</p> <div class="language-html extra-class"><pre class="language-html"><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span><span class="token punctuation">&gt;</span></span>
+
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>main</span><span class="token punctuation">&gt;</span></span>
+
+        <span class="token comment">&lt;!-- Static data like title, images, and body content are stored in WordPress --&gt;</span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h2</span><span class="token punctuation">&gt;</span></span>{{ $store.getters.post.title }}<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h2</span><span class="token punctuation">&gt;</span></span>
+
+        <span class="token comment">&lt;!-- `selectedVariantIndex` is an int that keeps track of the variant the user has selected --&gt;</span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>select</span> <span class="token attr-name">v-model</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">&quot;</span>selectedVariantIndex<span class="token punctuation">&quot;</span></span><span class="token punctuation">&gt;</span></span>
+
+            <span class="token comment">&lt;!-- Each variant (stored in `variants`) is pulled from Shopify --&gt;</span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>option</span>
+                <span class="token attr-name">v-for</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">&quot;</span>(variant, i) in variants<span class="token punctuation">&quot;</span></span>
+                <span class="token attr-name">:key</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">&quot;</span>i<span class="token punctuation">&quot;</span></span>
+                <span class="token attr-name">:value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">&quot;</span>i<span class="token punctuation">&quot;</span></span><span class="token punctuation">&gt;</span></span>
+
+                {{ variant.title }}
+
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>option</span><span class="token punctuation">&gt;</span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>select</span><span class="token punctuation">&gt;</span></span>
+
+        <span class="token comment">&lt;!-- `addToCart` adds one of the selected variant to the cart, incrementing the value if it already exists --&gt;</span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">@click</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">&quot;</span>addToCart<span class="token punctuation">&quot;</span></span><span class="token punctuation">&gt;</span></span>Add to Cart<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">&gt;</span></span>
+
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>main</span><span class="token punctuation">&gt;</span></span>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">&gt;</span></span>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span><span class="token punctuation">&gt;</span></span><span class="token script language-javascript">
+<span class="token keyword">import</span> <span class="token punctuation">{</span> mixin <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'wp-shopify'</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token punctuation">{</span>
+    <span class="token comment">// Using the wp-shopify `mixin` will give you access to the data and functions described above</span>
+    mixins<span class="token punctuation">:</span> <span class="token punctuation">[</span>mixin<span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+
+</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">&gt;</span></span>
+</code></pre></div></li> <li><p><strong>Use in carts:</strong>
+A shopping cart might look like this:</p> <div class="language-html extra-class"><pre class="language-html"><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">&quot;</span>shopping-cart<span class="token punctuation">&quot;</span></span><span class="token punctuation">&gt;</span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ul</span><span class="token punctuation">&gt;</span></span>
+
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span> <span class="token attr-name">v-for</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">&quot;</span>(product, i) in $store.state.shopify.cart<span class="token punctuation">&quot;</span></span> <span class="token attr-name">:key</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">&quot;</span>i<span class="token punctuation">&quot;</span></span><span class="token punctuation">&gt;</span></span>
+                <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span><span class="token punctuation">&gt;</span></span>{{ product.title }}<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">&gt;</span></span>
+                <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span><span class="token punctuation">&gt;</span></span>({{ product.quantity }})<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">&gt;</span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">&gt;</span></span>
+
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ul</span><span class="token punctuation">&gt;</span></span>
+
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> <span class="token attr-name">:href</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">&quot;</span>checkoutUrl<span class="token punctuation">&quot;</span></span> <span class="token attr-name">target</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">&quot;</span>_blank<span class="token punctuation">&quot;</span></span> <span class="token attr-name">rel</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">&quot;</span>noopener noreferrer<span class="token punctuation">&quot;</span></span><span class="token punctuation">&gt;</span></span>Checkout<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">&gt;</span></span>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span><span class="token punctuation">&gt;</span></span><span class="token script language-javascript">
+<span class="token keyword">import</span> <span class="token punctuation">{</span> mixin <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'wp-shopify'</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token punctuation">{</span>
+    mixins<span class="token punctuation">:</span> <span class="token punctuation">[</span>mixin<span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+
+</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">&gt;</span></span>
+</code></pre></div><p>Annotated:</p> <div class="language-html extra-class"><pre class="language-html"><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">&quot;</span>shopping-cart<span class="token punctuation">&quot;</span></span><span class="token punctuation">&gt;</span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ul</span><span class="token punctuation">&gt;</span></span>
+
+            <span class="token comment">&lt;!-- This assumes you're keeping the wp-shopify store in a module called `shopify` on your main store, creating the value `$store.state.shopify` --&gt;</span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span> <span class="token attr-name">v-for</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">&quot;</span>(product, i) in $store.state.shopify.cart<span class="token punctuation">&quot;</span></span> <span class="token attr-name">:key</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">&quot;</span>i<span class="token punctuation">&quot;</span></span><span class="token punctuation">&gt;</span></span>
+                <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span><span class="token punctuation">&gt;</span></span>{{ product.title }}<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">&gt;</span></span>
+                <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span><span class="token punctuation">&gt;</span></span>({{ product.quantity }})<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">&gt;</span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">&gt;</span></span>
+
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ul</span><span class="token punctuation">&gt;</span></span>
+
+        <span class="token comment">&lt;!-- The checkout URL is automatically updated any time the cart changes --&gt;</span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> <span class="token attr-name">:href</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">&quot;</span>checkoutUrl<span class="token punctuation">&quot;</span></span> <span class="token attr-name">target</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">&quot;</span>_blank<span class="token punctuation">&quot;</span></span> <span class="token attr-name">rel</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">&quot;</span>noopener noreferrer<span class="token punctuation">&quot;</span></span><span class="token punctuation">&gt;</span></span>Checkout<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">&gt;</span></span>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span><span class="token punctuation">&gt;</span></span><span class="token script language-javascript">
+<span class="token keyword">import</span> <span class="token punctuation">{</span> mixin <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'wp-shopify'</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token punctuation">{</span>
+    mixins<span class="token punctuation">:</span> <span class="token punctuation">[</span>mixin<span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+
+</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">&gt;</span></span>
+</code></pre></div></li></ol> <h2 id="reference"><a href="#reference" aria-hidden="true" class="header-anchor">#</a> Reference</h2> <h3 id="mixin"><a href="#mixin" aria-hidden="true" class="header-anchor">#</a> Mixin</h3> <p>Any component with the wp-shopify mixin gets the following properties:</p> <ul><li><p><strong>Props</strong>
+Note that you don't need to set these in most instances - if you're using Vuepress, they'll be populated already. You can override any of the Vuepress defaults with the props below.</p> <ul><li><p><code>productId</code> - String or Number, default pulled from <code>$store</code>
+Shopify product ID. For a single product, use:</p> <p><code>&lt;single-product :product-id=&quot;$store.getters.post.productId&quot;/&gt;</code></p> <p>For a product archive, use:</p> <p><code>&lt;single-product v-for=&quot;(product, i)&quot; :key=&quot;i&quot; :product-id=&quot;product.productId&quot;/&gt;</code></p> <p>The <code>productId</code> will be used for both the query to Shopify as well as the key for caching product data.</p></li></ul></li> <li><p><strong>Data</strong></p> <ul><li><p><code>productData</code> - default <code>null</code>
+Data fetched from Shopify and WordPress for this product. <code>null</code> if none received yet (or if a rejection is received). Otherwise an object with the following properties:</p> <div class="language-js extra-class"><pre class="language-js"><code><span class="token comment">// All product variants</span>
+variants<span class="token punctuation">:</span> <span class="token punctuation">[</span>
+    <span class="token comment">// Single variant example</span>
+    <span class="token punctuation">{</span>
+        <span class="token comment">// Whether or not this product is available for sale</span>
+        availableForSale<span class="token punctuation">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+        <span class="token comment">// Price padded to two decimal places</span>
+        price<span class="token punctuation">:</span> <span class="token string">'5.00'</span><span class="token punctuation">,</span>
+        <span class="token comment">// Variant title</span>
+        title<span class="token punctuation">:</span> <span class="token string">'green / large'</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">]</span><span class="token punctuation">,</span>
+
+<span class="token comment">// The product title</span>
+title<span class="token punctuation">:</span> <span class="token string">'T-Shirt Example'</span><span class="token punctuation">,</span>
+
+<span class="token comment">// Description HTML - available, but recommended to use WordPress content for faster load times</span>
+descriptionHtml<span class="token punctuation">:</span> <span class="token string">''</span><span class="token punctuation">,</span>
+
+<span class="token comment">// Information pulled from WordPress</span>
+wp<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token comment">// Relative path to this product's page</span>
+    path<span class="token punctuation">:</span> <span class="token string">'/products/product-name'</span><span class="token punctuation">,</span>
+    <span class="token comment">// Serialized Rest-Easy attachment for this product's featured image</span>
+    featuredAttachment<span class="token punctuation">:</span> Object
+<span class="token punctuation">}</span>
+</code></pre></div></li> <li><p><code>selectedVariantIndex</code> - default <code>0</code>
+Variant currently selected by the user.</p></li> <li><p><code>checkoutUrl</code> - default empty string
+URL to Shopify checkout. Automatically updated whenever the cart is updated.</p></li> <li><p><code>checkoutSubtotal</code> - default empty string
+Checkout subtotal, not including taxes or shipping.</p></li> <li><p><code>domain</code>- String, default pulled from <code>$store</code>
+Domain of the Shopify store. The backend usually sets this automatically, so most of the time you don't need to worry about it.</p></li> <li><p><code>token</code> - String, default pulled from <code>$store</code>
+Storefront Token for the Shopify store. The backend usually sets this automatically, so most of the time you don't need to worry about it.</p></li></ul></li></ul> <ul><li><p><strong>Mounted</strong></p> <p>The mixin's <code>mounted</code> function takes care of fetching a product's data from Shopify using the provided ID, Shopify domain, and Storefront token.</p> <p>It dispatches the <code>GET_PRODUCT_DATA</code> action on the WP-Shopify store, which does the following:</p> <ol><li>Checks for the product ID in the local cache. Returns cached value if found.</li> <li>Builds and executes a GraphQL query for the desired product.</li> <li>Caches and returns the parsed result of the query.</li></ol></li> <li><p><strong>Methods</strong></p> <ul><li><p><code>addToCart(event, quantity = 1)</code>
+Add a given quantity of the currently selected variant to the cart.</p></li> <li><p><code>removeFromCart()</code>
+Remove all of the given variant from the cart</p></li> <li><p><code>async getCheckoutUrl({})</code>
+Get the Shopify checkout URL from the given cart. Accepts one object as an argument that can have <code>domain</code> and <code>token</code> values, though these are automatically populated by wp-shopify. You shouldn't need to call this in most cases - the checkout URL is available in <code>data</code> and modified each time the cart is modified.</p></li> <li><p><code>async updateCheckoutUrl()</code>
+Update the <code>checkoutUrl</code> of this instance. You shouldn't need to call this in most cases - the checkout URL is available in <code>data</code> and modified each time the cart is modified.</p></li> <li><p><code>async getProduct(id)</code>
+Get product info for a given Shopify ID and save in the cache.</p></li></ul></li></ul> <h3 id="store"><a href="#store" aria-hidden="true" class="header-anchor">#</a> Store</h3> <h4 id="state"><a href="#state" aria-hidden="true" class="header-anchor">#</a> State</h4> <p>wp-shopify's <code>store.state</code> consists of:</p> <ul><li><p><code>productData</code>: Object, default empty
+Cache of all product data retrieved from Shopify. You shouldn't need to access this directly in most cases.</p></li> <li><p><code>cart</code>: Array, default empty
+Current Shopify cart. Contains an array of products in the following format:</p> <div class="language-js extra-class"><pre class="language-js"><code><span class="token punctuation">{</span>
+    productId<span class="token punctuation">:</span> <span class="token string">'String, Shopify product ID'</span><span class="token punctuation">,</span>
+    quantity<span class="token punctuation">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+    title<span class="token punctuation">:</span> <span class="token string">'String, product title'</span><span class="token punctuation">,</span>
+    variantId<span class="token punctuation">:</span> <span class="token string">'String, Shopify variant ID'</span><span class="token punctuation">,</span>
+    <span class="token comment">// WordPress information</span>
+    wp<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token comment">// rest-easy serialized featured image</span>
+        featuredAttachment<span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+        path<span class="token punctuation">:</span> <span class="token string">'/relative/path/to/product'</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div></li> <li><p><code>cartVersion</code>: Int, default 0
+Version of the Shopify cart. Since we can't watch the cart for nested values like quantity, this value is incremented every time the cart is modified.</p></li></ul> <h4 id="mutations"><a href="#mutations" aria-hidden="true" class="header-anchor">#</a> Mutations</h4> <p>You can <code>commit</code> any of the following mutations:</p> <ul><li><p><code>UPDATE_CACHED_RESULT</code></p> <p>You shouldn't need to use this in most cases - wp-shopify will handle its own product data cache.</p> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">this</span><span class="token punctuation">.</span>$store<span class="token punctuation">.</span><span class="token function">commit</span><span class="token punctuation">(</span><span class="token string">'UPDATE_CACHED_RESULT'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
+    shopifyId<span class="token punctuation">:</span> <span class="token comment">// string - ID of Shopify product</span>
+    data<span class="token punctuation">:</span> <span class="token comment">// anything - new data to cache for give Shopify product</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre></div></li> <li><p><code>ADD_TO_CART</code></p> <p>Add a single instance of a given product variant to the user's cart.</p> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">this</span><span class="token punctuation">.</span>$store<span class="token punctuation">.</span><span class="token function">commit</span><span class="token punctuation">(</span><span class="token string">'ADD_TO_CART'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
+    variantId<span class="token punctuation">:</span> <span class="token comment">// string - ID of Shopify product variant</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre></div></li> <li><p><code>SET_QUANTITY</code></p> <p>Set the quantity for a given product variant in the user's cart. Either change to a new value completely or add/subtract a given number.</p> <p>Requires either <code>quantity</code> for the former or <code>changeBy</code> for the latter.</p> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">this</span><span class="token punctuation">.</span>$store<span class="token punctuation">.</span><span class="token function">commit</span><span class="token punctuation">(</span><span class="token string">'SET_QUANTITY'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
+    variantId<span class="token punctuation">:</span> <span class="token comment">// string - ID of Shopify product variant</span>
+    quantity<span class="token punctuation">:</span> <span class="token comment">// int, optional - new quantity</span>
+    changeBy<span class="token punctuation">:</span> <span class="token comment">// int, optional - change existing quantity by this number</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre></div></li> <li><p><code>REMOVE_FROM_CART</code></p> <p>Removes a given variant from the cart.</p> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">this</span><span class="token punctuation">.</span>$store<span class="token punctuation">.</span><span class="token function">commit</span><span class="token punctuation">(</span><span class="token string">'REMOVE_FROM_CART'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
+    variantId<span class="token punctuation">:</span> <span class="token comment">// string - ID of Shopify product variant</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre></div></li></ul> <h4 id="actions"><a href="#actions" aria-hidden="true" class="header-anchor">#</a> Actions</h4> <p>You can <code>dispatch</code> any of the following actions:</p> <ul><li><p><code>GET_PRODUCT_DATA</code></p> <p>Retrieve cached product data or, if no data exist yet, fetch from Shopify and store in cache.</p> <p>Usually it's better to call <code>getProduct(id)</code> from the mixin, since it handles <code>domain</code> and <code>token</code> automatically.</p> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">const</span> productData <span class="token operator">=</span> <span class="token keyword">await</span> <span class="token keyword">this</span><span class="token punctuation">.</span>$store<span class="token punctuation">.</span><span class="token function">dispatch</span><span class="token punctuation">(</span><span class="token string">'GET_PRODUCT_DATA'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
+    shopifyId<span class="token punctuation">:</span> <span class="token comment">// string - ID of Shopify product</span>
+    domain<span class="token punctuation">:</span> <span class="token comment">// string - domain of Shopify store</span>
+    token<span class="token punctuation">:</span> <span class="token comment">// string - Storefront API token</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre></div></li></ul></div> <div class="page-edit"><!----> <!----></div> <!----> </div> <!----></div></div>
+    <script src="/assets/js/3.63654974.js" defer></script><script src="/assets/js/app.7e94c8e9.js" defer></script>
+  </body>
+</html>

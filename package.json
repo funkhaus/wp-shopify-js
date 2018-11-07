@@ -6,7 +6,9 @@
         "test": "echo \"Error: no test specified\" && exit 1",
         "build": "babel src/** ./index.js -d lib",
         "prepare": "npm run build",
-        "dev": "nodemon --watch ./src --watch index.js --exec npm run build"
+        "dev": "nodemon --watch ./src --watch index.js --exec npm run build",
+        "docs:dev": "vuepress dev docs-src",
+        "docs:build": "vuepress build docs-src && mv docs-src/.vuepress/dist docs"
     },
     "babel": {
         "presets": [
@@ -33,6 +35,8 @@
         "lodash": "^4.17.11",
         "nodemon": "^1.18.4",
         "vue": "^2.5.13",
+        "vue-template-compiler": "^2.5.17",
+        "vuepress": "^0.14.4",
         "vuex": "^3.0.1"
     },
     "description": "Vue mixin + store module for WP-Shopify. Integrates Vue, WordPress, and Shopify."
