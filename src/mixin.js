@@ -16,8 +16,7 @@ export default {
     data() {
         return {
             selectedVariantIndex: 0,
-            product: null,
-            cartVersion: 0
+            product: null
         }
     },
     async mounted() {

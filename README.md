@@ -47,9 +47,34 @@ If you're combining this plugin with its optional [WordPress backend](https://gi
 
 That's it! You've got full access to the store module, mixin, and instance variables below.
 
+## The Mixin
+
+The plugin automatically adds the following mixin data on all components:
+
+```js
+{
+    props: {
+        productId: {
+            type: String,
+            default: ''
+        }
+    },
+    data() {
+        return {
+            selectedVariantIndex: 0,
+            product: null,
+            cartVersion: 0
+        }
+    }
+
+}
+```
+
 ## Product Templating
 
-If you know the ID of your product, you can retrieve the full object with `getProduct`:
+All of a product's Shopify data is contained in the product object. If you know the ID of your product, you can retrieve the full object with `getProduct`.
+
+(Note that for our examples we'll be referencing the `product` data property, which is declared in the Vuepress mixin. You'll be able to drop in the below code and have it work as-is.)
 
 ```html
 <template>
@@ -73,19 +98,7 @@ export default {
 </script>
 ```
 
-You can also pass the ID as a prop:
-
-`ProductExample.vue`
-
-```html
-<template>
-
-    <div class="product-example">
-        {{ product }}
-    </div>
-
-</template>
-```
+You can also pass the ID as a prop called `product-id` to automatically fetch a product on a custom component:
 
 `Main.vue`
 
@@ -96,6 +109,21 @@ You can also pass the ID as a prop:
 
 </template>
 ```
+
+`ProductExample.vue`
+
+```html
+<template>
+
+    <div class="product-example">
+        <!-- Plugin automatically fetches `product` if the `product-id` prop is set -->
+        {{ product }}
+    </div>
+
+</template>
+```
+
+### Variants
 
 ## TODO: Update this section
 
