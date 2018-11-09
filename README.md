@@ -62,8 +62,7 @@ The plugin automatically adds the following mixin data on all components:
     data() {
         return {
             selectedVariantIndex: 0,
-            product: null,
-            cartVersion: 0
+            product: null
         }
     },
     async mounted(){
@@ -75,9 +74,9 @@ The plugin automatically adds the following mixin data on all components:
     methods: {
         async getProduct(id){
             /*
-            `getProduct` fetches the product with the given ID from Shopify.
+            `getProduct` fetches and returns the product with the given ID from Shopify.
             First, it checks the cached data in `$store.state.shopify.productData[id]`;
-            if nothing is found, it builds and executes a query for the product data from Shopify.
+            if nothing is found, it builds and executes a query for the product data from Shopify, caching the result.
             */
         },
         async getVariant(variant, product){
@@ -103,11 +102,51 @@ The plugin automatically adds the following mixin data on all components:
 }
 ```
 
+## Product Data
+
+Data fetched with `getProduct` is formatted like this:
+
+```js
+{
+    // Shopify ID (base64-encoded string from Shopify)
+    id: 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0Lzk1NTIzMjI1NjAzNg==',
+
+    // Shopify title
+    title: 'My Product',
+
+    // Shopify description as raw HTML
+    descriptionHtml: '',
+
+    // List of variants
+    variants: [
+        {
+            // Price for this variant
+            price: '30.00',
+
+            // Variant title
+            title: 'Small',
+
+            // Whether or not this variant is available
+            availableForSale: true,
+
+            // Variant ID
+            id: 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0VmFyaWFudC85NDE3NTIzMzMxMTA4'
+        }
+    ],
+
+    // If `wordpress` was set to `true` when installing plugin:
+    wp: {
+        // relative path to this product in WordPress
+        path: '/store/sample-product/'
+    }
+}
+```
+
 ## Product Templating
 
-All of a product's Shopify data is contained in the product object. If you know the ID of your product, you can retrieve the full object with `getProduct`.
+### Basic Templating
 
-(Note that for our examples we'll be referencing the `product` data property, which is declared in the Vuepress mixin. You'll be able to drop in the below code and have it work as-is.)
+All of a product's Shopify data is contained in the product object. If you know the ID of your product, you can retrieve the full object with `getProduct`.
 
 ```html
 <template>
@@ -149,7 +188,6 @@ You can also pass the ID as a prop called `product-id` to automatically fetch a 
 <template>
 
     <div class="product-example">
-        <!-- Plugin automatically fetches `product` if the `product-id` prop is set -->
         {{ product }}
     </div>
 
@@ -157,6 +195,8 @@ You can also pass the ID as a prop called `product-id` to automatically fetch a 
 ```
 
 ### Variants
+
+A product usually has at least one variant - different colors, sizes, etc. - that you'll need to account for.
 
 ## TODO: Update this section
 
