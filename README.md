@@ -94,7 +94,8 @@ The plugin automatically adds the following mixin data on all components:
     computed: {
         selectedVariant(){
             /*
-            Returns either the currently selected variant or, if none is selected or no product is present, null.
+            Returns either the currently selected variant or,
+            if none is selected or no product is present, null.
             */
         }
     }
