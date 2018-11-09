@@ -21,17 +21,7 @@ export default {
     },
     async mounted() {
         if (this.productId) {
-            await this.getProduct(this.productId)
-        }
-
-        if (
-            !this.$store.state.shopify.domain ||
-            !this.$store.state.shopify.token
-        ) {
-            this.$store.commit('SET_DOMAIN_AND_TOKEN', {
-                domain: this.$shopify.domain,
-                token: this.$shopify.token
-            })
+            this.product = await this.getProduct(this.productId)
         }
     },
     methods: {
@@ -86,7 +76,7 @@ export default {
                 })
 
                 // save the result
-                this.product = output = parsedResult
+                output = parsedResult
             }
 
             return output
@@ -104,11 +94,13 @@ export default {
 
             return fetchedProduct.variants[variant]
         },
-        addToCart() {
+        addToCart(product = null, variant = null) {
+            const toAdd = product ? product : this.product
+            const variantToAdd = variant ? variant : this.selectedVariant
             this.$store.commit('ADD_TO_CART', {
-                ...this.product,
+                ...toAdd,
                 variant: {
-                    ...this.selectedVariant
+                    ...variantToAdd
                 }
             })
         }

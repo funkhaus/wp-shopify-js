@@ -65,6 +65,38 @@ The plugin automatically adds the following mixin data on all components:
             product: null,
             cartVersion: 0
         }
+    },
+    async mounted(){
+        /*
+        The mounted function checks to see if the `productId` prop is set.
+        If it is, mounted() sets `this.product` to the result of `this.getProduct(this.productId)`.
+        */
+    },
+    methods: {
+        async getProduct(id){
+            /*
+            `getProduct` fetches the product with the given ID from Shopify.
+            First, it checks the cached data in `$store.state.shopify.productData[id]`;
+            if nothing is found, it builds and executes a query for the product data from Shopify.
+            */
+        },
+        async getVariant(variant, product){
+            /*
+            TODO
+            */
+        },
+        addToCart(product){
+            /*
+            TODO
+            */
+        }
+    },
+    computed: {
+        selectedVariant(){
+            /*
+            Returns either the currently selected variant or, if none is selected or no product is present, null.
+            */
+        }
     }
 
 }
