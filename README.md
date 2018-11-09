@@ -142,6 +142,88 @@ Data fetched with `getProduct` is formatted like this:
 }
 ```
 
+## Store Module
+
+WP-Shopify adds a module called `shopify` to the Vuex store with the following state, mutations, and actions:
+
+```js
+state: {
+    // Cache for fetched product data
+    productData: {},
+
+    // load initial cart state from localStorage (defaults to empty array)
+    cart: loadCart(),
+
+    // domain and token (set in installation)
+    domain: '',
+    token: '',
+
+    // since we can't deep-watch the cart for quantities, etc, the store
+    // watches this value and increment every time the cart is modified
+    // (this is for internal use only)
+    cartVersion: 0,
+
+    // checkout URL as calculated from cart contents
+    checkoutUrl: '',
+
+    // subtotal of all items in cart
+    subtotal: ''
+},
+mutations: {
+    UPDATE_CACHED_RESULT({ shopifyId, data }) {
+        /*
+        Updates `state.productData` entry for `shopifyId` with new `data`
+        */
+    },
+    ADD_TO_CART({ variant, quantity }) {
+        /*
+        Adds `quantity` (default 1) of the given `variant` to the cart.
+        Updates localstorage and the checkout URL.
+        */
+    },
+    SET_QUANTITY({ variant, quantity, changeBy }) {
+        /*
+        Either set the `variant` to a specific `quantity` or change its current
+        `quantity` by `changeBy` units. Updates localstorage and the checkout URL.
+        */
+    },
+    REMOVE_FROM_CART({ variant }) {
+        /*
+        Removes all of a given `variant` from the cart.
+        Updates localstorage and the checkout URL.
+        */
+    },
+    EMPTY_CART() {
+        /*
+        Removes everything from the cart.
+        Updates localstorage and the checkout URL.
+        */
+
+    },
+    UPDATE_CHECKOUT() {
+        /*
+        Manually refresh the checkout URL. Usually called internally.
+        */
+    },
+    SET_DOMAIN_AND_TOKEN({ domain, token, force }) {
+        /*
+        Update the Shopify domain and token.
+        Set `force` to `true` to update even if a Shopify domain and token already exist.
+        */
+    }
+},
+actions: {
+    async GET_PRODUCT_DATA(
+        { shopifyId, domain, token }
+    ) {
+        /*
+        Fetch and cache a product's data given its ID.
+        Should not be called manually - use `getProduct` from the mixin instead.
+        */
+    }
+}
+```
+
 ## Product Templating
 
 ### Basic Templating
@@ -152,7 +234,7 @@ All of a product's Shopify data is contained in the product object. If you know 
 <template>
 
     <section>
-        {{ product }}
+        {{ product ? product.title : '' }}
     </section>
 
 </template>
@@ -188,7 +270,7 @@ You can also pass the ID as a prop called `product-id` to automatically fetch a 
 <template>
 
     <div class="product-example">
-        {{ product }}
+        {{ product ? product.title : '' }}
     </div>
 
 </template>
@@ -198,336 +280,115 @@ You can also pass the ID as a prop called `product-id` to automatically fetch a 
 
 A product usually has at least one variant - different colors, sizes, etc. - that you'll need to account for.
 
-## TODO: Update this section
+The easiest way to handle this is to use the built-in `selectedVariant` system. For example:
 
-1.  **Use in product lists or detail pages:**
+```html
+<template>
 
-    A single `wps-product` page might look like this:
+    <h2 v-if="!product">Loading...</h2>
 
-    ```html
-    <template>
+    <main v-else>
 
-        <main>
+        <h2>{{ product.title }}</h2>
 
-            <h2>{{ $store.getters.post.title }}</h2>
+        <h3>Currently selected: {{ selectedVariant.title }} (${{ selectedVariant.price }})</h3>
 
-            <select v-model="selectedVariantIndex">
-                <option
-                    v-for="(variant, i) in variants"
-                    :key="i"
-                    :value="i">
+        <select v-model="selectedVariantIndex">
+            <option
+                v-for="(variant, i) in variants"
+                :key="i"
+                :value="i">
 
-                    {{ variant.title }}
+                {{ variant.title }}
 
-                </option>
-            </select>
+            </option>
+        </select>
 
-            <button @click="addToCart">Add to Cart</button>
+        <button @click="addToCart()">
+            Add to Cart
+        </button>
 
-        </main>
+    </main>
 
-    </template>
+</template>
+```
 
-    <script>
-    import { mixin } from 'wp-shopify'
+And an annotated version of the above:
 
-    export default {
-        mixins: [mixin]
-    }
+````html
+```html
+<template>
 
-    </script>
-    ```
+    <!-- Product loading state -->
+    <h2 v-if="!product">Loading...</h2>
 
-    And an annotated version of the above:
+    <!-- Product loaded and ready -->
+    <main v-else>
 
-    ```html
-    <template>
+        <h2>{{ product.title }}</h2>
 
-        <main>
+        <h3>Currently selected: {{ selectedVariant.title }} (${{ selectedVariant.price }})</h3>
 
-            <!-- Static data like title, images, and body content are stored in WordPress -->
-            <h2>{{ $store.getters.post.title }}</h2>
+        <!-- Changing the selectedVariantIndex changes the selectedVariant -->
+        <select v-model="selectedVariantIndex">
+            <option
+                v-for="(variant, i) in variants"
+                :key="i"
+                :value="i">
 
-            <!-- `selectedVariantIndex` is an int that keeps track of the variant the user has selected -->
-            <select v-model="selectedVariantIndex">
+                {{ variant.title }}
 
-                <!-- Each variant (stored in `variants`) is pulled from Shopify -->
-                <option
-                    v-for="(variant, i) in variants"
-                    :key="i"
-                    :value="i">
+            </option>
+        </select>
 
-                    {{ variant.title }}
+        <!-- addToCart is another function from the mixin -->
+        <button @click="addToCart()">
+            Add to Cart
+        </button>
 
-                </option>
-            </select>
+    </main>
 
-            <!-- `addToCart` adds one of the selected variant to the cart, incrementing the value if it already exists -->
-            <button @click="addToCart">Add to Cart</button>
+</template>
+````
 
-        </main>
+### Cart
 
-    </template>
+A shopping cart might look like this:
 
-    <script>
-    import { mixin } from 'wp-shopify'
+```html
+<template>
+    <div class="shopping-cart">
+        <ul>
 
-    export default {
-        // Using the wp-shopify `mixin` will give you access to the data and functions described above
-        mixins: [mixin]
-    }
+            <li v-for="(product, i) in $store.state.shopify.cart" :key="i">
+                <span>{{ product.title }}</span>
+                <span>({{ product.quantity }})</span>
+            </li>
 
-    </script>
-    ```
+        </ul>
 
-1.  **Use in carts:**
-    A shopping cart might look like this:
+        <a :href="checkoutUrl" target="_blank" rel="noopener noreferrer">Checkout</a>
+    </div>
+</template>
+```
 
-    ```html
-    <template>
-        <div class="shopping-cart">
-            <ul>
+Annotated:
 
-                <li v-for="(product, i) in $store.state.shopify.cart" :key="i">
-                    <span>{{ product.title }}</span>
-                    <span>({{ product.quantity }})</span>
-                </li>
+```html
+<template>
+    <div class="shopping-cart">
+        <ul>
 
-            </ul>
-
-            <a :href="checkoutUrl" target="_blank" rel="noopener noreferrer">Checkout</a>
-        </div>
-    </template>
-
-    <script>
-    import { mixin } from 'wp-shopify'
-
-    export default {
-        mixins: [mixin]
-    }
-
-    </script>
-    ```
-
-    Annotated:
-
-    ```html
-    <template>
-        <div class="shopping-cart">
-            <ul>
-
-                <!-- This assumes you're keeping the wp-shopify store in a module called `shopify` on your main store, creating the value `$store.state.shopify` -->
-                <li v-for="(product, i) in $store.state.shopify.cart" :key="i">
-                    <span>{{ product.title }}</span>
-                    <span>({{ product.quantity }})</span>
-                </li>
-
-            </ul>
-
-            <!-- The checkout URL is automatically updated any time the cart changes -->
-            <a :href="checkoutUrl" target="_blank" rel="noopener noreferrer">Checkout</a>
-        </div>
-    </template>
-
-    <script>
-    import { mixin } from 'wp-shopify'
-
-    export default {
-        mixins: [mixin]
-    }
-
-    </script>
-    ```
-
-## Reference
-
-### Mixin
-
-Any component with the wp-shopify mixin gets the following properties:
-
--   **Props**
-    Note that you don't need to set these in most instances - if you're using Vuepress, they'll be populated already. You can override any of the Vuepress defaults with the props below.
-
-    -   `productId` - String or Number, default pulled from `$store`
-        Shopify product ID. For a single product, use:
-
-        `<single-product :product-id="$store.getters.post.productId"/>`
-
-        For a product archive, use:
-
-        `<single-product v-for="(product, i)" :key="i" :product-id="product.productId"/>`
-
-        The `productId` will be used for both the query to Shopify as well as the key for caching product data.
-
--   **Data**
-
-    -   `productData` - default `null`
-        Data fetched from Shopify and WordPress for this product. `null` if none received yet (or if a rejection is received). Otherwise an object with the following properties:
-
-        ```js
-        // All product variants
-        variants: [
-            // Single variant example
-            {
-                // Whether or not this product is available for sale
-                availableForSale: true,
-                // Price padded to two decimal places
-                price: '5.00',
-                // Variant title
-                title: 'green / large'
-            }
-        ],
-
-        // The product title
-        title: 'T-Shirt Example',
-
-        // Description HTML - available, but recommended to use WordPress content for faster load times
-        descriptionHtml: '',
-
-        // Information pulled from WordPress
-        wp: {
-            // Relative path to this product's page
-            path: '/products/product-name',
-            // Serialized Rest-Easy attachment for this product's featured image
-            featuredAttachment: Object
-        }
-        ```
-
-    -   `selectedVariantIndex` - default `0`
-        Variant currently selected by the user.
-
-    -   `checkoutUrl` - default empty string
-        URL to Shopify checkout. Automatically updated whenever the cart is updated.
-
-    -   `checkoutSubtotal` - default empty string
-        Checkout subtotal, not including taxes or shipping.
-
-    -   `domain`- String, default pulled from `$store`
-        Domain of the Shopify store. The backend usually sets this automatically, so most of the time you don't need to worry about it.
-
-    -   `token` - String, default pulled from `$store`
-        Storefront Token for the Shopify store. The backend usually sets this automatically, so most of the time you don't need to worry about it.
-
-*   **Mounted**
-
-    The mixin's `mounted` function takes care of fetching a product's data from Shopify using the provided ID, Shopify domain, and Storefront token.
-
-    It dispatches the `GET_PRODUCT_DATA` action on the WP-Shopify store, which does the following:
-
-    1.  Checks for the product ID in the local cache. Returns cached value if found.
-    1.  Builds and executes a GraphQL query for the desired product.
-    1.  Caches and returns the parsed result of the query.
-
-*   **Methods**
-
-    -   `addToCart(event, quantity = 1)`
-        Add a given quantity of the currently selected variant to the cart.
-
-    -   `removeFromCart()`
-        Remove all of the given variant from the cart
-
-    -   `async getCheckoutUrl({})`
-        Get the Shopify checkout URL from the given cart. Accepts one object as an argument that can have `domain` and `token` values, though these are automatically populated by wp-shopify. You shouldn't need to call this in most cases - the checkout URL is available in `data` and modified each time the cart is modified.
-
-    -   `async updateCheckoutUrl()`
-        Update the `checkoutUrl` of this instance. You shouldn't need to call this in most cases - the checkout URL is available in `data` and modified each time the cart is modified.
-
-    -   `async getProduct(id)`
-        Get product info for a given Shopify ID and save in the cache.
-
-### Store
-
-#### State
-
-wp-shopify's `store.state` consists of:
-
--   `productData`: Object, default empty
-    Cache of all product data retrieved from Shopify. You shouldn't need to access this directly in most cases.
-
--   `cart`: Array, default empty
-    Current Shopify cart. Contains an array of products in the following format:
-
-    ```js
-    {
-        productId: 'String, Shopify product ID',
-        quantity: 1,
-        title: 'String, product title',
-        variantId: 'String, Shopify variant ID',
-        // WordPress information
-        wp: {
-            // rest-easy serialized featured image
-            featuredAttachment: {},
-            path: '/relative/path/to/product'
-        }
-    }
-    ```
-
--   `cartVersion`: Int, default 0
-    Version of the Shopify cart. Since we can't watch the cart for nested values like quantity, this value is incremented every time the cart is modified.
-
-#### Mutations
-
-You can `commit` any of the following mutations:
-
--   `UPDATE_CACHED_RESULT`
-
-    You shouldn't need to use this in most cases - wp-shopify will handle its own product data cache.
-
-    ```js
-    this.$store.commit('UPDATE_CACHED_RESULT', {
-        shopifyId: // string - ID of Shopify product
-        data: // anything - new data to cache for give Shopify product
-    })
-    ```
-
--   `ADD_TO_CART`
-
-    Add a single instance of a given product variant to the user's cart.
-
-    ```js
-    this.$store.commit('ADD_TO_CART', {
-        variantId: // string - ID of Shopify product variant
-    })
-    ```
-
--   `SET_QUANTITY`
-
-    Set the quantity for a given product variant in the user's cart. Either change to a new value completely or add/subtract a given number.
-
-    Requires either `quantity` for the former or `changeBy` for the latter.
-
-    ```js
-    this.$store.commit('SET_QUANTITY', {
-        variantId: // string - ID of Shopify product variant
-        quantity: // int, optional - new quantity
-        changeBy: // int, optional - change existing quantity by this number
-    })
-    ```
-
--   `REMOVE_FROM_CART`
-
-    Removes a given variant from the cart.
-
-    ```js
-    this.$store.commit('REMOVE_FROM_CART', {
-        variantId: // string - ID of Shopify product variant
-    })
-    ```
-
-#### Actions
-
-You can `dispatch` any of the following actions:
-
--   `GET_PRODUCT_DATA`
-
-    Retrieve cached product data or, if no data exist yet, fetch from Shopify and store in cache.
-
-    Usually it's better to call `getProduct(id)` from the mixin, since it handles `domain` and `token` automatically.
-
-    ```js
-    const productData = await this.$store.dispatch('GET_PRODUCT_DATA', {
-        shopifyId: // string - ID of Shopify product
-        domain: // string - domain of Shopify store
-        token: // string - Storefront API token
-    })
-    ```
+            <!-- Shopify data is kept in a Vuex module called 'shopify' -->
+            <li v-for="(product, i) in $store.state.shopify.cart" :key="i">
+                <span>{{ product.title }}</span>
+                <span>({{ product.quantity }})</span>
+            </li>
+
+        </ul>
+
+        <!-- The checkout URL is automatically updated any time the cart changes -->
+        <a :href="checkoutUrl" target="_blank" rel="noopener noreferrer">Checkout</a>
+    </div>
+</template>
+```

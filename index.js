@@ -23,7 +23,10 @@ export default {
         // make shopify info accessible anywhere
         Vue.prototype.$shopify = options
 
+        // set starting domain and token
         // add module to store
+        store.state.domain = options.domain
+        store.state.token = options.token
         options.store.registerModule('shopify', store)
 
         // define mixin

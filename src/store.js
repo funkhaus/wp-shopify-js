@@ -74,22 +74,20 @@ export default {
         UPDATE_CACHED_RESULT(state, { shopifyId, data }) {
             state.productData[shopifyId] = data
         },
-        ADD_TO_CART(state, payload) {
+        ADD_TO_CART(state, { variant, quantity }) {
             // check if the variant already exists in the cart
-            const index = state.cart.findIndex(
-                i => i.variant.id == payload.variant.id
-            )
+            const index = state.cart.findIndex(i => i.variant.id == variant.id)
 
             if (index >= 0) {
                 // if it exists, add 1 to the quantity
                 setQuantity(state, {
-                    variant: payload.variant,
+                    variant: variant,
                     changeBy: 1
                 })
             } else {
                 // if it doesn't exist, push to cart with quantity of 1
-                payload.quantity = 1
-                state.cart.push(payload)
+                quantity = 1
+                state.cart.push({ variant, quantity })
             }
 
             // Update storage
