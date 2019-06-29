@@ -4,7 +4,8 @@ import _get from 'lodash/get'
 import {
     buildProductQueryBody,
     executeQuery,
-    buildCheckoutUrlQueryBody
+    buildCheckoutUrlQueryBody,
+    getCheckoutStatusQueryBody
 } from './query-functions'
 import { updateLocalStorage, loadCart, clearCart } from './local-storage'
 
@@ -49,10 +50,15 @@ const updateCheckout = async function(state) {
         res,
         'data.checkoutCreate.checkout.webUrl',
         '#error'
-    )
+    ),
     state.subtotal = _get(
         res,
         'data.checkoutCreate.checkout.subtotalPrice',
+        '#error'
+    ),
+    state.checkoutId = _get(
+        res,
+        'data.checkoutCreate.checkout.id',
         '#error'
     )
 }
@@ -68,26 +74,30 @@ export default {
         // watch this value and increment every time the cart is modified
         cartVersion: 0,
         checkoutUrl: '',
-        subtotal: ''
+        checkoutId: '',
+        subtotal: '',
+        hasCheckedOut: false
     },
     mutations: {
         UPDATE_CACHED_RESULT(state, { shopifyId, data }) {
             state.productData[shopifyId] = data
         },
-        ADD_TO_CART(state, { variant, quantity }) {
+        ADD_TO_CART(state, payload) {
             // check if the variant already exists in the cart
-            const index = state.cart.findIndex(i => i.variant.id == variant.id)
+            const index = state.cart.findIndex(
+                i => i.variant.id == payload.variant.id
+            )
 
             if (index >= 0) {
                 // if it exists, add 1 to the quantity
                 setQuantity(state, {
-                    variant: variant,
+                    variant: payload.variant,
                     changeBy: 1
                 })
             } else {
                 // if it doesn't exist, push to cart with quantity of 1
-                quantity = 1
-                state.cart.push({ variant, quantity })
+                payload.quantity = 1
+                state.cart.push(payload)
             }
 
             // Update storage
@@ -131,6 +141,24 @@ export default {
             }
 
             updateCheckout(state)
+        },
+        IS_CHECKOUT_COMPLETED(state, data) {
+            state.hasCheckedOut = data
+        },
+        CLEAR_CHECKOUT(state) {
+            clearCart()
+
+            let newState = {
+                productData: {},
+                cart: loadCart(),
+                cartVersion: 0,
+                checkoutUrl: '',
+                checkoutId: '',
+                subtotal: '',
+                hasCheckedOut: false
+            }
+
+            Object.assign(state, newState)
         }
     },
     actions: {
@@ -164,6 +192,25 @@ export default {
 
             // return result from cache to guarantee correct info
             return state.productData[shopifyId]
+        },
+        async GET_CHECKOUT_STATUS({state, commit}) {
+            if(state.checkoutId) {
+                const query = getCheckoutStatusQueryBody(state.checkoutId)
+
+                let args = {}
+                args.domain = state.domain
+                args.token  = state.token
+                args.query = query
+
+                const result = await executeQuery(args)
+                let timestamp = _get(result, 'data.node.completedAt', null)
+                commit('IS_CHECKOUT_COMPLETED', timestamp)
+
+                if(timestamp) {
+                    // If checkout completed, clear checkout
+                    commit('CLEAR_CHECKOUT')
+                }
+            }
         }
     }
 }
