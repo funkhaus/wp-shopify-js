@@ -41,6 +41,22 @@ export const buildCheckoutUrlQueryBody = function(shopifyId, cart) {
             checkout {
                 webUrl
                 subtotalPrice
+                id
+            }
+        }
+    }
+    `
+}
+
+
+// Checkout URL query builder
+export const getCheckoutStatusQueryBody = function(cartId) {
+    return `
+    query {
+        node(id: "${cartId}") {
+            ... on Checkout {
+                id
+                completedAt
             }
         }
     }
