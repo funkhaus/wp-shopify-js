@@ -16,6 +16,7 @@ export const buildProductQueryBody = function(shopifyId) {
                 title
                 availableForSale
                 id
+                compareAtPrice
               }
             }
           }
@@ -47,7 +48,6 @@ export const buildCheckoutUrlQueryBody = function(shopifyId, cart) {
     }
     `
 }
-
 
 // Checkout URL query builder
 export const getCheckoutStatusQueryBody = function(cartId) {
