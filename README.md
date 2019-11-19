@@ -122,6 +122,9 @@ Data fetched with `getProduct` is formatted like this:
         {
             // Price for this variant
             price: '30.00',
+            
+            // Compare to sale price for this variant
+            compareAtPrice: '30.00',
 
             // Variant title
             title: 'Small',
