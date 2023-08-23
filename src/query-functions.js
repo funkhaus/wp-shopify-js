@@ -12,11 +12,15 @@ export const buildProductQueryBody = function(shopifyId) {
           variants(first: 250) {
             edges {
               node {
-                price
+                price {
+                    amount
+                }
                 title
                 availableForSale
                 id
-                compareAtPrice
+                compareAtPrice {
+                    amount
+                }
               }
             }
           }
@@ -41,7 +45,9 @@ export const buildCheckoutUrlQueryBody = function(shopifyId, cart) {
             }) {
             checkout {
                 webUrl
-                subtotalPrice
+                subtotalPrice {
+                    amount
+                }
                 id
             }
         }
@@ -65,7 +71,7 @@ export const getCheckoutStatusQueryBody = function(cartId) {
 
 // Generic query executor
 export const executeQuery = async function({ domain, token, query }) {
-    return await fetch(`https://${domain}/api/graphql`, {
+    return await fetch(`https://${domain}/api/2022-10/graphql.json`, {
         method: 'POST',
         headers: new Headers({
             'Content-Type': 'application/graphql',

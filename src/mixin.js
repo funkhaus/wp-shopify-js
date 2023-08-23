@@ -1,7 +1,6 @@
 import {
     buildProductQueryBody,
-    executeQuery,
-    buildCheckoutUrlQueryBody
+    executeQuery
 } from './query-functions'
 import { loadCart } from './local-storage'
 import _get from 'lodash/get'
@@ -86,9 +85,11 @@ export default {
                 product = this.productId
             }
 
-            const productId = (await this.getProduct(
-                product && product.id ? product.id : product
-            )).id
+            const productId = (
+                await this.getProduct(
+                    product && product.id ? product.id : product
+                )
+            ).id
 
             const fetchedProduct = await this.getProduct(productId)
 
