@@ -56,115 +56,117 @@ export const buildCheckoutUrlQueryBody = function(shopifyId, cart) {
     //     }
     // }
     return `
-    mutation cartCreate(input: { lines: [${lineItems}] }) {
-        cart {
-            id
-            checkoutUrl
-            cost {
-                subtotalAmount {
-                    amount
-                    currencyCode
+    mutation {
+        cartCreate(input: { lines: [${lineItems}] }) {
+            cart {
+                id
+                checkoutUrl
+                cost {
+                    subtotalAmount {
+                        amount
+                        currencyCode
+                    }
+                    totalAmount {
+                        amount
+                        currencyCode
+                    }
+                    totalTaxAmount {
+                        amount
+                        currencyCode
+                    }
                 }
-                totalAmount {
-                    amount
-                    currencyCode
-                }
-                totalTaxAmount {
-                    amount
-                    currencyCode
-                }
-            }
-            totalQuantity
-            lines(first: 100) {
-                edges {
-                    node {
-                        id
-                        quantity
-                        cost {
-                            totalAmount {
-                                amount
-                                currencyCode
-                            }
-                        }
-                        merchandise {
-                            ... on ProductVariant {
-                                id
-                                title
-                                selectedOptions {
-                                    name
-                                    value
+                totalQuantity
+                lines(first: 100) {
+                    edges {
+                        node {
+                            id
+                            quantity
+                            cost {
+                                totalAmount {
+                                    amount
+                                    currencyCode
                                 }
-                                product {
+                            }
+                            merchandise {
+                                ... on ProductVariant {
                                     id
-                                    handle
-                                    availableForSale
                                     title
-                                    description
-                                    descriptionHtml
-                                    options {
-                                        id
+                                    selectedOptions {
                                         name
-                                        values
+                                        value
                                     }
-                                    priceRange {
-                                        maxVariantPrice {
-                                        amount
-                                        currencyCode
-                                        }
-                                        minVariantPrice {
-                                        amount
-                                        currencyCode
-                                        }
-                                    }
-                                    compareAtPriceRange {
-                                        maxVariantPrice {
-                                        amount
-                                        currencyCode
-                                        }
-                                    }
-                                    variants(first: 250) {
-                                        edges {
-                                        node {
+                                    product {
+                                        id
+                                        handle
+                                        availableForSale
+                                        title
+                                        description
+                                        descriptionHtml
+                                        options {
                                             id
-                                            title
-                                            availableForSale
-                                            selectedOptions {
                                             name
-                                            value
-                                            }
-                                            price {
+                                            values
+                                        }
+                                        priceRange {
+                                            maxVariantPrice {
                                             amount
                                             currencyCode
                                             }
-                                            compareAtPrice {
+                                            minVariantPrice {
                                             amount
                                             currencyCode
                                             }
                                         }
+                                        compareAtPriceRange {
+                                            maxVariantPrice {
+                                            amount
+                                            currencyCode
+                                            }
                                         }
-                                    }
-                                    featuredImage {
-                                        url
-                                        altText
-                                        width
-                                        height
-                                    }
-                                    images(first: 20) {
-                                        edges {
-                                        node {
+                                        variants(first: 250) {
+                                            edges {
+                                            node {
+                                                id
+                                                title
+                                                availableForSale
+                                                selectedOptions {
+                                                name
+                                                value
+                                                }
+                                                price {
+                                                amount
+                                                currencyCode
+                                                }
+                                                compareAtPrice {
+                                                amount
+                                                currencyCode
+                                                }
+                                            }
+                                            }
+                                        }
+                                        featuredImage {
                                             url
                                             altText
                                             width
                                             height
                                         }
+                                        images(first: 20) {
+                                            edges {
+                                            node {
+                                                url
+                                                altText
+                                                width
+                                                height
+                                            }
+                                            }
                                         }
+                                        seo {
+                                            description
+                                            title
+                                        }
+                                        tags
+                                        updatedAt
                                     }
-                                    seo {
-                                        description
-                                        title
-                                    }
-                                    tags
-                                    updatedAt
                                 }
                             }
                         }
