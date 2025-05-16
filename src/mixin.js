@@ -99,7 +99,7 @@ export default {
             const toAdd = product ? product : this.product
             const variantToAdd = variant ? variant : this.selectedVariant
 
-            console.log("add to cart: ", {
+            console.log("add to cart mixin\n: ", {
                 ...toAdd,
                 variant: {
                     ...variantToAdd
