@@ -45,7 +45,10 @@ const updateCheckout = async function(state) {
         query
     })
 
+    console.log("updateCheckout response", res)
+
     // get checkout URL or an error
+    /*
     state.checkoutUrl = _get(
         res,
         'data.checkoutCreate.checkout.webUrl',
@@ -59,6 +62,23 @@ const updateCheckout = async function(state) {
     state.checkoutId = _get(
         res,
         'data.checkoutCreate.checkout.id',
+        '#error'
+    )
+    */
+
+    state.checkoutUrl = _get(
+        res,
+        'data.cartCreate.cart.checkoutUrl',
+        '#error'
+    ),
+    state.subtotal = _get(
+        res,
+        'data.cartCreate.cart.cost.totalAmount.amount',
+        '#error'
+    ),
+    state.checkoutId = _get(
+        res,
+        'data.cartCreate.cart.id',
         '#error'
     )
 }
@@ -84,6 +104,9 @@ export default {
         },
         ADD_TO_CART(state, payload) {
             // check if the variant already exists in the cart
+
+            console.log("ADD_TO_CART store mutation\n", 'state: \n', state, "payload: \n", payload)
+
             const index = state.cart.findIndex(
                 i => i.variant.id == payload.variant.id
             )

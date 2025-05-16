@@ -32,23 +32,147 @@ export const buildProductQueryBody = function(shopifyId) {
 
 // Checkout URL query builder
 export const buildCheckoutUrlQueryBody = function(shopifyId, cart) {
+    // variantId: "${item.variant.id}", // replaced with merchandiseId below
+    // Do we Need to get variantID as gid://shopify/ProductVariant/15776591708273 => 15776591708273 ?
+    // merchandiseId: "${item.variant.id.split('/').pop()}",
     const lineItems = cart.map(item => {
         return `{
-            variantId: "${item.variant.id}",
+            merchandiseId: "${item.variant.id}",
             quantity: ${item.quantity} }`
     })
 
+    console.log("line Items: ", lineItems)
+
+    // mutation {
+    //     checkoutCreate(input: {
+    //             lineItems: [${lineItems}]
+    //         }) {
+    //         checkout {
+    //             webUrl
+    //             subtotalPrice {
+    //                 amount
+    //             }
+    //             id
+    //         }
+    //     }
+    // }
     return `
     mutation {
-        checkoutCreate(input: {
-                lineItems: [${lineItems}]
-            }) {
-            checkout {
-                webUrl
-                subtotalPrice {
-                    amount
-                }
+        cartCreate(input: { lines: [${lineItems}] }) {
+            cart {
                 id
+                checkoutUrl
+                cost {
+                    subtotalAmount {
+                        amount
+                        currencyCode
+                    }
+                    totalAmount {
+                        amount
+                        currencyCode
+                    }
+                    totalTaxAmount {
+                        amount
+                        currencyCode
+                    }
+                }
+                totalQuantity
+                lines(first: 100) {
+                    edges {
+                        node {
+                            id
+                            quantity
+                            cost {
+                                totalAmount {
+                                    amount
+                                    currencyCode
+                                }
+                            }
+                            merchandise {
+                                ... on ProductVariant {
+                                    id
+                                    title
+                                    selectedOptions {
+                                        name
+                                        value
+                                    }
+                                    product {
+                                        id
+                                        handle
+                                        availableForSale
+                                        title
+                                        description
+                                        descriptionHtml
+                                        options {
+                                            id
+                                            name
+                                            values
+                                        }
+                                        priceRange {
+                                            maxVariantPrice {
+                                            amount
+                                            currencyCode
+                                            }
+                                            minVariantPrice {
+                                            amount
+                                            currencyCode
+                                            }
+                                        }
+                                        compareAtPriceRange {
+                                            maxVariantPrice {
+                                            amount
+                                            currencyCode
+                                            }
+                                        }
+                                        variants(first: 250) {
+                                            edges {
+                                            node {
+                                                id
+                                                title
+                                                availableForSale
+                                                selectedOptions {
+                                                name
+                                                value
+                                                }
+                                                price {
+                                                amount
+                                                currencyCode
+                                                }
+                                                compareAtPrice {
+                                                amount
+                                                currencyCode
+                                                }
+                                            }
+                                            }
+                                        }
+                                        featuredImage {
+                                            url
+                                            altText
+                                            width
+                                            height
+                                        }
+                                        images(first: 20) {
+                                            edges {
+                                            node {
+                                                url
+                                                altText
+                                                width
+                                                height
+                                            }
+                                            }
+                                        }
+                                        seo {
+                                            description
+                                            title
+                                        }
+                                        tags
+                                        updatedAt
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -71,7 +195,7 @@ export const getCheckoutStatusQueryBody = function(cartId) {
 
 // Generic query executor
 export const executeQuery = async function({ domain, token, query }) {
-    return await fetch(`https://${domain}/api/2022-10/graphql.json`, {
+    return await fetch(`https://${domain}/api/2024-04/graphql.json`, {
         method: 'POST',
         headers: new Headers({
             'Content-Type': 'application/graphql',
