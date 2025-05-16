@@ -48,6 +48,7 @@ const updateCheckout = async function(state) {
     console.log("response", res)
 
     // get checkout URL or an error
+    /*
     state.checkoutUrl = _get(
         res,
         'data.checkoutCreate.checkout.webUrl',
@@ -61,6 +62,23 @@ const updateCheckout = async function(state) {
     state.checkoutId = _get(
         res,
         'data.checkoutCreate.checkout.id',
+        '#error'
+    )
+    */
+
+    state.checkoutUrl = _get(
+        res,
+        'data.cartCreate.cart.checkoutUrl',
+        '#error'
+    ),
+    state.subtotal = _get(
+        res,
+        'data.cartCreate.cart.cost.totalAmount.amount',
+        '#error'
+    ),
+    state.checkoutId = _get(
+        res,
+        'data.cartCreate.cart.id',
         '#error'
     )
 }

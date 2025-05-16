@@ -39,16 +39,133 @@ export const buildCheckoutUrlQueryBody = function(shopifyId, cart) {
     })
 
     return `
-    mutation {
-        checkoutCreate(input: {
-                lineItems: [${lineItems}]
-            }) {
-            checkout {
-                webUrl
-                subtotalPrice {
+    // mutation {
+    //     checkoutCreate(input: {
+    //             lineItems: [${lineItems}]
+    //         }) {
+    //         checkout {
+    //             webUrl
+    //             subtotalPrice {
+    //                 amount
+    //             }
+    //             id
+    //         }
+    //     }
+    // }
+    mutation cartCreate(input: { lines: [$lineItems] }) {
+        cart {
+            id
+            checkoutUrl
+            cost {
+                subtotalAmount {
                     amount
+                    currencyCode
                 }
-                id
+                totalAmount {
+                    amount
+                    currencyCode
+                }
+                totalTaxAmount {
+                    amount
+                    currencyCode
+                }
+            }
+            totalQuantity
+            lines(first: 100) {
+                edges {
+                    node {
+                        id
+                        quantity
+                        cost {
+                            totalAmount {
+                                amount
+                                currencyCode
+                            }
+                        }
+                        merchandise {
+                            ... on ProductVariant {
+                                id
+                                title
+                                selectedOptions {
+                                    name
+                                    value
+                                }
+                                product {
+                                    id
+                                    handle
+                                    availableForSale
+                                    title
+                                    description
+                                    descriptionHtml
+                                    options {
+                                        id
+                                        name
+                                        values
+                                    }
+                                    priceRange {
+                                        maxVariantPrice {
+                                        amount
+                                        currencyCode
+                                        }
+                                        minVariantPrice {
+                                        amount
+                                        currencyCode
+                                        }
+                                    }
+                                    compareAtPriceRange {
+                                        maxVariantPrice {
+                                        amount
+                                        currencyCode
+                                        }
+                                    }
+                                    variants(first: 250) {
+                                        edges {
+                                        node {
+                                            id
+                                            title
+                                            availableForSale
+                                            selectedOptions {
+                                            name
+                                            value
+                                            }
+                                            price {
+                                            amount
+                                            currencyCode
+                                            }
+                                            compareAtPrice {
+                                            amount
+                                            currencyCode
+                                            }
+                                        }
+                                        }
+                                    }
+                                    featuredImage {
+                                        url
+                                        altText
+                                        width
+                                        height
+                                    }
+                                    images(first: 20) {
+                                        edges {
+                                        node {
+                                            url
+                                            altText
+                                            width
+                                            height
+                                        }
+                                        }
+                                    }
+                                    seo {
+                                        description
+                                        title
+                                    }
+                                    tags
+                                    updatedAt
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
