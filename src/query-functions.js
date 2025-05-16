@@ -42,7 +42,6 @@ export const buildCheckoutUrlQueryBody = function(shopifyId, cart) {
 
     console.log("line Items: ", lineItems)
 
-    return `
     // mutation {
     //     checkoutCreate(input: {
     //             lineItems: [${lineItems}]
@@ -56,6 +55,7 @@ export const buildCheckoutUrlQueryBody = function(shopifyId, cart) {
     //         }
     //     }
     // }
+    return `
     mutation cartCreate(input: { lines: [${lineItems}] }) {
         cart {
             id
