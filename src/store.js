@@ -104,6 +104,9 @@ export default {
         },
         ADD_TO_CART(state, payload) {
             // check if the variant already exists in the cart
+
+            console.log("ADD_TO_CART\n", 'state: \n', state, "payload: \n", payload)
+
             const index = state.cart.findIndex(
                 i => i.variant.id == payload.variant.id
             )

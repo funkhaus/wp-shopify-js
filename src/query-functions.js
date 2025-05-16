@@ -32,10 +32,10 @@ export const buildProductQueryBody = function(shopifyId) {
 
 // Checkout URL query builder
 export const buildCheckoutUrlQueryBody = function(shopifyId, cart) {
+    // variantId: "${item.variant.id}", // replaced with merchandiseId below
+    // Do we Need to get variantID as gid://shopify/ProductVariant/15776591708273 => 15776591708273 ?
     const lineItems = cart.map(item => {
         return `{
-            // variantId: "${item.variant.id}", // replaced with merchandiseId
-            // Do we Need to get variantID as gid://shopify/ProductVariant/15776591708273 => 15776591708273 ?
             merchandiseId: "${item.variant.id}",
             quantity: ${item.quantity} }`
     })
