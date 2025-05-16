@@ -45,6 +45,8 @@ const updateCheckout = async function(state) {
         query
     })
 
+    console.log("response", res)
+
     // get checkout URL or an error
     state.checkoutUrl = _get(
         res,
