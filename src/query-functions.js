@@ -34,9 +34,10 @@ export const buildProductQueryBody = function(shopifyId) {
 export const buildCheckoutUrlQueryBody = function(shopifyId, cart) {
     // variantId: "${item.variant.id}", // replaced with merchandiseId below
     // Do we Need to get variantID as gid://shopify/ProductVariant/15776591708273 => 15776591708273 ?
+    // merchandiseId: "${item.variant.id.split('/').pop()}",
     const lineItems = cart.map(item => {
         return `{
-            merchandiseId: "${item.variant.id.split('/').pop()}",
+            merchandiseId: "${item.variant.id}",
             quantity: ${item.quantity} }`
     })
 
