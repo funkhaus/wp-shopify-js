@@ -52,7 +52,7 @@ export const buildCheckoutUrlQueryBody = function(shopifyId, cart) {
     //         }
     //     }
     // }
-    mutation cartCreate(input: { lines: [$lineItems] }) {
+    mutation cartCreate(input: { lines: [${lineItems}] }) {
         cart {
             id
             checkoutUrl
